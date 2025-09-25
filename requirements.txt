@@ -7,3 +7,14 @@ python-dateutil==2.9.0.post0
 six==1.17.0
 typeguard==2.13.3
 typing_extensions==4.15.0
+rich==14.1.0
+langchain==0.3.27
+langchain-text-splitters==0.3.11
+torch==2.8.0
+sentence-transformers==5.1.0
+langchain-huggingface==0.3.1
+jsonlines==4.0.0
+langchain-community==0.3.29
+langchain-core==0.3.76
+langchain-experimental==0.3.4
+langchain-huggingface==0.3.1
