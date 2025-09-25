@@ -1,0 +1,64 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowVPCCreationWithTag",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateVpc",
+                "ec2:CreateSubnet"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:RequestTag/Purpose": "Test"
+                }
+            }
+        },
+        {
+            "Sid": "AllowVPCAndSubnetManagementIfTagged",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DeleteVpc",
+                "ec2:DescribeVpcs",
+                "ec2:DeleteSubnet",
+                "ec2:DescribeSubnets",
+                "ec2:ModifyVpcAttribute",
+                "ec2:DescribeAvailabilityZones"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceTag/Purpose": "Test"
+                }
+            }
+        },
+        {
+            "Sid": "AllowNATGatewayCreationWithTag",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateNatGateway"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:RequestTag/Purpose": "Test"
+                }
+            }
+        },
+        {
+            "Sid": "AllowNATGatewayManagementIfTagged",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DeleteNatGateway",
+                "ec2:DescribeNatGateways"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceTag/Purpose": "Test"
+                }
+            }
+        }
+    ]
+}
