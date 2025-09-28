@@ -18,3 +18,7 @@ langchain-community==0.3.29
 langchain-core==0.3.76
 langchain-experimental==0.3.4
 langchain-huggingface==0.3.1
+dotenv==0.9.9
+python-dotenv==1.1.1
+transformers==4.56.1
+openai==1.109.1
