@@ -92,7 +92,7 @@ class S3DataProvider(DataProvider):
                 keys.extend([o["Key"] for o in response["Contents"]])
             return keys
         except Exception as ex:
-            logger.info("Listing S3 objects failed: {ex}")
+            logger.info(f"Listing S3 objects failed: {ex}")
 
 
     def get_object(self, path: str, name: str) -> str:
