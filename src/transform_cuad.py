@@ -11,6 +11,7 @@ from multiprocessing import Pool
 from logging_config import configure_logging
 from langchain_huggingface import HuggingFaceEmbeddings
 from data_provider import (
+    get_data_provider,
     DataProvider,
     LocalDataProvider, 
     S3DataProvider
@@ -280,7 +281,7 @@ def process_contract_annotations(contract_name: str,
     if ext != ".txt":
         ext = ".txt"
     full_contract_name = f"{file_name}{ext}"
-    contract_bin = _data_provider.get_object(full_contracts_path, full_contract_name)
+    contract_bin = _data_provider.get_object(os.path.join(full_contracts_path, full_contract_name))
     if not contract_bin:
         logger.info(f"Contract '{full_contract_name}' not found.")
         return
@@ -290,20 +291,7 @@ def process_contract_annotations(contract_name: str,
     policies = json.loads(Path(policies_path).read_text(encoding="utf-8"))
     qas_entries = process_cuad_paragraphs(contract_item, contract_chunks, policies)
     output_text = json.dumps({"qas": qas_entries})
-    _data_provider.put_object(output_path, contract_name, output_text)
-
-
-def get_data_provider(chunks_annots_path: str) -> DataProvider:
-   """
-   Returns the local or the S3 data provider depending on the chunks annotations path prefix.
-
-   Args:
-       chunks_annots_path: a location where the files with contracts' chunked annotations are stored. 
-
-   Returns:
-       a specialized data provider object.
-   """
-   return S3DataProvider() if chunks_annots_path.startswith("s3://") else LocalDataProvider()
+    _data_provider.put_object(os.path.join(output_path, contract_name), output_text)
 
 
 def _init_worker(chunks_annots_path: str) -> None:
