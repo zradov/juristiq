@@ -1,0 +1,166 @@
+{
+  "Affiliate License-Licensee": {
+    "policy_id": "P-001",
+    "policy_text": "This clause must be reviewed to ensure compliance with company licensing standards and applicable law."
+  },
+  "Affiliate License-Licensor": {
+    "policy_id": "P-002",
+    "policy_text": "This clause must be reviewed to ensure licensors do not exceed granted rights or conflict with existing agreements."
+  },
+  "Agreement Date": {
+    "policy_id": "P-003",
+    "policy_text": "Agreement dates must be clear and enforceable as the start of contractual obligations."
+  },
+  "Anti-Assignment": {
+    "policy_id": "P-004",
+    "policy_text": "This clause must be reviewed to ensure assignment restrictions align with company transfer policies."
+  },
+  "Audit Rights": {
+    "policy_id": "P-005",
+    "policy_text": "This clause must be reviewed to ensure audit rights are reasonable and proportionate."
+  },
+  "Cap On Liability": {
+    "policy_id": "P-006",
+    "policy_text": "This clause must be reviewed to ensure liability caps comply with company standards."
+  },
+  "Change Of Control": {
+    "policy_id": "P-007",
+    "policy_text": "This clause must be reviewed to ensure change-of-control provisions are acceptable."
+  },
+  "Competitive Restriction Exception": {
+    "policy_id": "P-008",
+    "policy_text": "This clause must be reviewed to ensure competition restrictions allow for required exceptions."
+  },
+  "Covenant Not To Sue": {
+    "policy_id": "P-009",
+    "policy_text": "This clause must be reviewed to ensure covenants not to sue are enforceable and limited."
+  },
+  "Document Name": {
+    "policy_id": "P-010",
+    "policy_text": "Document names must be clear and consistent with company templates."
+  },
+  "Effective Date": {
+    "policy_id": "P-011",
+    "policy_text": "Effective date must be clearly defined and enforceable."
+  },
+  "Exclusivity": {
+    "policy_id": "P-012",
+    "policy_text": "Exclusivity clauses must be reviewed to avoid excessive restrictions on company operations."
+  },
+  "Expiration Date": {
+    "policy_id": "P-013",
+    "policy_text": "Expiration dates must be clearly specified to avoid ambiguity."
+  },
+  "Governing Law": {
+    "policy_id": "P-014",
+    "policy_text": "Governing law must align with company jurisdictional preferences."
+  },
+  "Insurance": {
+    "policy_id": "P-015",
+    "policy_text": "Insurance obligations must comply with company risk management policies."
+  },
+  "Ip Ownership Assignment": {
+    "policy_id": "P-016",
+    "policy_text": "IP ownership clauses must ensure company retains rights to developed intellectual property."
+  },
+  "Irrevocable Or Perpetual License": {
+    "policy_id": "P-017",
+    "policy_text": "Irrevocable or perpetual licenses must be carefully reviewed for business risk."
+  },
+  "Joint Ip Ownership": {
+    "policy_id": "P-018",
+    "policy_text": "Joint IP ownership must be clearly defined to avoid disputes."
+  },
+  "License Grant": {
+    "policy_id": "P-019",
+    "policy_text": "License grants must be scoped to avoid unintended rights transfers."
+  },
+  "Liquidated Damages": {
+    "policy_id": "P-020",
+    "policy_text": "Liquidated damages must be reasonable and legally enforceable."
+  },
+  "Minimum Commitment": {
+    "policy_id": "P-021",
+    "policy_text": "Minimum commitments must align with business expectations and capacity."
+  },
+  "Most Favored Nation": {
+    "policy_id": "P-022",
+    "policy_text": "Most Favored Nation clauses must be reviewed to avoid commercial risk."
+  },
+  "No-Solicit Of Customers": {
+    "policy_id": "P-023",
+    "policy_text": "No-solicit of customers clauses must be reasonable and enforceable."
+  },
+  "No-Solicit Of Employees": {
+    "policy_id": "P-024",
+    "policy_text": "No-solicit of employees clauses must comply with employment law."
+  },
+  "Non-Compete": {
+    "policy_id": "P-025",
+    "policy_text": "Non-compete clauses must be limited in scope and duration."
+  },
+  "Non-Disparagement": {
+    "policy_id": "P-026",
+    "policy_text": "Non-disparagement clauses must not restrict lawful speech."
+  },
+  "Non-Transferable License": {
+    "policy_id": "P-027",
+    "policy_text": "Non-transferable licenses must align with company licensing policies."
+  },
+  "Notice Period To Terminate Renewal": {
+    "policy_id": "P-028",
+    "policy_text": "Notice periods for renewal termination must provide adequate lead time."
+  },
+  "Post-Termination Services": {
+    "policy_id": "P-029",
+    "policy_text": "Post-termination service obligations must be clearly defined."
+  },
+  "Price Restrictions": {
+    "policy_id": "P-030",
+    "policy_text": "Price restrictions must comply with antitrust and commercial laws."
+  },
+  "Renewal Term": {
+    "policy_id": "P-031",
+    "policy_text": "Renewal terms must be reasonable and clearly stated."
+  },
+  "Revenue/Profit Sharing": {
+    "policy_id": "P-032",
+    "policy_text": "Revenue/profit sharing must be clearly calculated and transparent."
+  },
+  "Rofr/Rofo/Rofn": {
+    "policy_id": "P-033",
+    "policy_text": "Right of first refusal/offer/negotiation clauses must be carefully reviewed for business impact."
+  },
+  "Source Code Escrow": {
+    "policy_id": "P-034",
+    "policy_text": "Source code escrow clauses must protect company access rights if vendor fails."
+  },
+  "Termination For Convenience": {
+    "policy_id": "P-035",
+    "policy_text": "Termination for convenience must require adequate notice and avoid imbalance."
+  },
+  "Third Party Beneficiary": {
+    "policy_id": "P-036",
+    "policy_text": "Third-party beneficiary rights must be clearly limited."
+  },
+  "Uncapped Liability": {
+    "policy_id": "P-037",
+    "policy_text": "Uncapped liability must be avoided unless explicitly approved."
+  },
+  "Unlimited/All-You-Can-Eat-License": {
+    "policy_id": "P-038",
+    "policy_text": "Unlimited license grants must be reviewed for potential revenue leakage."
+  },
+  "Volume Restriction": {
+    "policy_id": "P-039",
+    "policy_text": "Volume restrictions must align with expected business usage."
+  },
+  "Warranty Duration": {
+    "policy_id": "P-040",
+    "policy_text": "Warranty duration should comply with statutory minimums and industry standards."
+  },
+  "Parties": {
+    "policy_id": "P-041",
+    "policy_text": "All contracting parties must be identified with consistent legal entity names as registered in the Secretary of State records."
+  }
+}
