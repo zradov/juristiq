@@ -26,7 +26,7 @@ class DataS3BucketConstruct(Construct):
 
         juristiq_data_bucket = _create_bucket(self, "s3_data_bucket", iac_config.JURISTIQ_DATA_BUCKET_NAME)
         cuad_transformed_bucket =_create_bucket(self, "s3_cuad_transformed_bucket", iac_config.CUAD_TRANSFORMED_BUCKET_NAME)
-        cuad_final_bucket = _create_bucket(self, "s3_cuad_final_bucket", iac_config.CUAD_FINAL_BUCKET_NAME)
+        cuad_reviewed_bucket = _create_bucket(self, "s3_cuad_final_bucket", iac_config.CUAD_REVIEWED_BUCKET_NAME)
         ml_data_bucket = _create_bucket(self, "s3_ml_data", iac_config.ML_DATA_BUCKET_NAME)
         code_bucket = _create_bucket(self, "code", iac_config.JURISTIQ_CODE_BUCKET_NAME)
 
