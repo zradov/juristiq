@@ -41,8 +41,10 @@ The system can:
 * [src](./src/) - the application source code.
   * [config.py](./src/config.py) - shared constants used in the application project.
   * [cuad_chunker.py](./src/cuad_chunker.py) - extracts annotations related to a single contract from the main CUAD_v1.json file into a separate file.
-  * [data_provider.py](./src/data_provider.py) - used for loading and storing contracts from/to a local file system or S3 location.
+  * [data_providers.py](./src/data_provider.py) - used for loading and storing contracts from/to a local file system or S3 location.
+  * [llm_utils.py](./src/llm_utils.py) - utility function for working LLMs.
   * [logging_config](./src/logging_config.py) - shared constants specifically used for configuring logger.
+  * [review_cuad](./src/review_cuad.py) - runs comliance review on each contract clause annotation using LLM.
   * [transform_cuad.py](./src/transform_cuad.py) - augments the chunked CUAD annotations with additions field and stores them into a separate folder.
 
 ## 3. Architecture
