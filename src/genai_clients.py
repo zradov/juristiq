@@ -43,6 +43,10 @@ class GenAIClient(ABC):
         self._chat_metrics = GenAIChatMetrics()
 
 
+    def get_chat_metrics(self) -> GenAIChatMetrics:
+        return self._chat_metrics
+
+
     @abstractmethod
     def _update_metrics(self, response) -> None:
         """
