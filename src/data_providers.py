@@ -65,10 +65,6 @@ class DataProvider:
 
 class LocalDataProvider(DataProvider):
 
-    def __init__(self):
-        super().__init__()
-
-
     def make_containers(self, path: Union[str, Path]) -> None:
         if isinstance(path, str):
             os.makedirs(path, exist_ok=True)
