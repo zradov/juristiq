@@ -4,19 +4,12 @@ import json
 import config
 import logging
 import argparse
-import logging_config
 from pathlib import Path
 from dotenv import load_dotenv
 from multiprocessing import Pool
 from logging_config import configure_logging
+from data_providers import get_data_provider
 from langchain_huggingface import HuggingFaceEmbeddings
-from data_provider import (
-    get_data_provider,
-    DataProvider,
-    LocalDataProvider, 
-    S3DataProvider
-)
-from langchain_community.utils.math import cosine_similarity
 from langchain_experimental.text_splitter import SemanticChunker
 
 
