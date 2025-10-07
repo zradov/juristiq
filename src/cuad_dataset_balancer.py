@@ -211,6 +211,10 @@ class CuadDatasetBalancer:
             start_pos = 0
 
             for answer, (start_idx, end_idx) in answers_boundaries.items():
+                # Temporary workaround for the issue https://github.com/zradov/juristiq/issues/1
+                if version_idx >= len(new_phrases.get(answer, [])):
+                    logger.warning(f"The version index {version_idx} is out of range for the answer '{answer}'.")
+                    return augmented_annots
                 new_context.append(original_annot["context"][start_pos:start_idx])
                 if answer not in new_phrases:
                     logger.warning(f"The answer '{answer}' not found the new phrases list.")
