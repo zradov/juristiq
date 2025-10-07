@@ -18,8 +18,11 @@ The system can:
 
 * [arch](./arch/) - folder containing architectural diagrams.
 * [data](./data/) - data folder.
-  * [clause_compliance_llm_prompt.txt](./data/clause_compliance_llm_prompt.txt) - LLM prompt used for retrieving compliance review from LLM model acting as a legal AI assistant.
+  * [clause_augmentation_llm_prompt_template.yml](./data/clause_augmentation_llm_prompt_template.yml) - LLM prompt template used for augmenting annotations of different clause types. 
+  * [clause_compliance_llm_prompt_template.yml](./data/clause_compliance_llm_prompt_template.yml) - LLM prompt template used for retrieving compliance review from LLM model acting as a legal AI assistant.
+  * [missing_clause_augmentation_llm_prompt_template.yml](./data/missing_clause_augmentation_llm_prompt_template.yml) - LLM prompt template used specifically for augmenting annotations with the "Missing" clause type. 
   * [policies.json](./data/policies.json) - various policies used to verify compliance of clauses.
+  * [rephrase_text_llm_prompt_template.yml](./data/rephrase_text_llm_prompt_template.yml) - LLM prompt template used for generating variations of the input phrases. 
 * [iac](./iac/) - AWS CDK IaC folder.
   * [custom_constructs](./iac/custom_constructs/) - custom AWS CDK definitions of AWS infrastructure components.
     * [buckets.py](./iac/custom_constructs/buckets.py) - S3 buckets definitions.
@@ -39,11 +42,21 @@ The system can:
   * [app.py](./iac/app.py) - the main script of the IaC project, used to setup all stacks;
   * [iac_config](./iac/iac_config.py) - shared constants used in the IaC project.
 * [src](./src/) - the application source code.
+  * [annots_utils.py](./src/annots_utils.py) - utility functions for working with annotation samples.
   * [config.py](./src/config.py) - shared constants used in the application project.
   * [cuad_chunker.py](./src/cuad_chunker.py) - extracts annotations related to a single contract from the main CUAD_v1.json file into a separate file.
+  * [cuad_dataset_balancer.py](./src/cuad_dataset_balancer.py) - produces the balanced dataset.
+  * [cuad_dataset_balancing.py](./src/cuad_dataset_balancing.py) - runs the dataset balancing process.
   * [data_providers.py](./src/data_provider.py) - used for loading and storing contracts from/to a local file system or S3 location.
+  * [data_utils.py](./src/data_utils.py) - various data utilities.
+  * [genai_clients.py](./src/genai_clients.py) - adapters for different GenAI providers.
+  * [genai_config.py](./src/genai_config.py) - GenAI configuration settings.
+  * [genai_exceptions.py](./src/genai_exceptions.py) - custom exceptions triggered by GenAI adapters.
+  * [genai_output_parsers.py](./src/genai_output_parsers.py) - different GenAI output parsers.
+  * [genai_utils.py](./src/genai_utils.py) - utilities used with the GenAI adapters.
   * [llm_utils.py](./src/llm_utils.py) - utility function for working LLMs.
   * [logging_config](./src/logging_config.py) - shared constants specifically used for configuring logger.
+  * [remote_paraphraser.py](./src/remote_paraphraser.py) - runs the phrases generation using GenAI provider's API.
   * [review_cuad](./src/review_cuad.py) - runs comliance review on each contract clause annotation using LLM.
   * [transform_cuad.py](./src/transform_cuad.py) - augments the chunked CUAD annotations with additions field and stores them into a separate folder.
 
@@ -122,11 +135,13 @@ python ./transform_cuad_s3.py -c PATH_TO_THE_FOLDER_WITH_CHUNKED_CUAD_ANNOTS -o 
 ```
 > The path to folders containing CUAD data and policies can be either a path on a local file system or AWS S3 bucket path.
 
-## 7. Prerequisities
+## 7. Data preprocessing
 
-## 8. Infrastructure as code
+## 8. Prerequisities
 
-## 9. Running the app
+## 9. Infrastructure as code
 
-## 10. Running the unit tests
+## 10. Running the app
+
+## 11. Running the unit tests
 
