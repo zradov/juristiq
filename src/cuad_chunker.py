@@ -1,10 +1,7 @@
-import re
 import os
 import json
-import config
 import logging
 import argparse
-import jsonlines
 from multiprocessing import Pool
 from langchain_core.embeddings import Embeddings
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -51,8 +48,3 @@ def save_to_json(data: dict, output_file: str):
         json.dump(data, fp)
     
     logger.info(f"Data saved to '{output_file}'.")
-
-
-if __name__ == "__main__":
-    args = parse_args()
-    chunk_cuad(args.annots_file, args.output_dir)
