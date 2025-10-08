@@ -96,8 +96,9 @@ def _create_prompt_builder(
 
 def _get_prompt_builder(
     template_path: str, 
-    context_transformer: Callable,
-    context_key: str = "data_batch"
+    context_transformer: Callable = None,
+    context_key: str = "data_batch",
+    **kwargs
 ) -> Callable[..., list[Dict]]:
     """
     Returns a prompt builder function with the specified configuration.
@@ -109,8 +110,12 @@ def _get_prompt_builder(
     """
     prompt_build_vars = {
         "versions_count": lambda kwargs: kwargs["versions_count"],
-        "context": lambda kwargs: context_transformer(kwargs[context_key])
     }
+    
+    if context_key and context_transformer:
+        prompt_build_vars["context"] = lambda kwargs: context_transformer(kwargs[context_key])
+
+    prompt_build_vars.update(kwargs)
     
     return _create_prompt_builder(template_path, prompt_build_vars)
 
@@ -150,8 +155,7 @@ def get_rephrase_text_prompt_builder() -> Callable[..., list[Dict]]:
     """
     return _get_prompt_builder(
         config.REPHRASE_TEXT_LLM_PROMPT_TEMPLATE_PATH,
-        lambda data_batch: "\n    ".join(list(data_batch)),
-        "titles"
+        titles=lambda kwargs: "\n    ".join(list(kwargs["data_batch"])),
     )
 
 
