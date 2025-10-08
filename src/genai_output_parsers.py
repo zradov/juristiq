@@ -129,7 +129,7 @@ class ClauseAugmentationParser(Parser):
     A parser class to parse the output of GenAI API requests that contain clauses and their augmentations.
     """
     def __init__(self):
-        super().__init__(r"^\s*[[]?(?P<key>[^:\]]+)[]]?\s*(:\s*(?P<value>.+[.])\s*)?$")
+        super().__init__(r"^\s*[[]?(?P<key>[^:\]]+)[\]]?\s*(:\s*(?P<value>.+[.])\s*)?$")
 
 
     def _post_processing(self, 
