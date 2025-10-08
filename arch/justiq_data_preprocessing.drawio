@@ -1,0 +1,140 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
+  <diagram name="Seite-1" id="TpdsvJ-G4kxA8_xUjOna">
+    <mxGraphModel dx="1042" dy="626" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-1" value="CUAD annotations" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.storage;" vertex="1" parent="1">
+          <mxGeometry x="132.42000000000002" y="334.75" width="51.5" height="51.5" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-3" value="CUAD Chunking" style="sketch=0;outlineConnect=0;fontColor=#000000;fillColor=#60a917;strokeColor=#2D7600;dashed=0;verticalLabelPosition=top;verticalAlign=bottom;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.external_sdk;labelPosition=center;" vertex="1" parent="1">
+          <mxGeometry x="130" y="112.38" width="56.34" height="64.62" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-12" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="360" y="80" width="346" height="127" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-10" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Storage&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;strokeColor=#B9E0A5;align=center;" vertex="1" parent="uMAYI7Or0-LL8xsJXS3Z-12">
+          <mxGeometry width="345.99999999999994" height="127" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-5" value="AWS S3 bucket" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="uMAYI7Or0-LL8xsJXS3Z-12">
+          <mxGeometry x="251.46553126897388" y="28.80446001167542" width="55.787369939219126" height="55.787369939219126" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-4" value="File system" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.file_system;" vertex="1" parent="uMAYI7Or0-LL8xsJXS3Z-12">
+          <mxGeometry x="48.20996357012751" y="28.802977232924693" width="55.78736993921914" height="52.21125648157688" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;dashed=1;dashPattern=1 2;" edge="1" parent="1" source="uMAYI7Or0-LL8xsJXS3Z-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="179.99951553329856" y="159" as="sourcePoint" />
+            <mxPoint x="359" y="151" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="359" y="151" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-15" value="CUAD annotations &lt;br&gt;grouped by contract" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="uMAYI7Or0-LL8xsJXS3Z-14">
+          <mxGeometry x="0.0264" y="-2" relative="1" as="geometry">
+            <mxPoint y="-22" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-16" value="CUAD Transformation" style="sketch=0;outlineConnect=0;fontColor=#000000;fillColor=#60a917;strokeColor=#2D7600;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.external_sdk;" vertex="1" parent="1">
+          <mxGeometry x="387" y="327" width="58.41" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=1 2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="429" y="213" as="sourcePoint" />
+            <mxPoint x="429" y="323" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="429" y="209" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-23" value="CUAD annotations&lt;br&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212)); color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;grouped by contract&lt;/span&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="uMAYI7Or0-LL8xsJXS3Z-19">
+          <mxGeometry x="-0.0219" relative="1" as="geometry">
+            <mxPoint x="54" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=1 2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="402" y="326" as="sourcePoint" />
+            <mxPoint x="402" y="209" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="402" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-22" value="chunked CUAD &lt;br&gt;annotations, &lt;br&gt;one annotation&lt;br&gt;per file&amp;nbsp;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="uMAYI7Or0-LL8xsJXS3Z-21">
+          <mxGeometry x="-0.0857" y="2" relative="1" as="geometry">
+            <mxPoint x="-44" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-24" value="CUAD&amp;nbsp; compliance &lt;br&gt;review" style="sketch=0;outlineConnect=0;fontColor=#000000;fillColor=#60a917;strokeColor=#2D7600;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.external_sdk;" vertex="1" parent="1">
+          <mxGeometry x="629" y="327" width="58.41" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;dashPattern=1 2;" edge="1" parent="1" source="uMAYI7Or0-LL8xsJXS3Z-3" target="uMAYI7Or0-LL8xsJXS3Z-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=1 2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="671" y="324" as="sourcePoint" />
+            <mxPoint x="671" y="209.75" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="671" y="210.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-30" value="CUAD annotations&lt;br&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212)); color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;with compliance review&lt;/span&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="uMAYI7Or0-LL8xsJXS3Z-29">
+          <mxGeometry x="-0.0857" y="2" relative="1" as="geometry">
+            <mxPoint x="65" y="-9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;align=center;dashed=1;dashPattern=1 2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="644" y="210" as="sourcePoint" />
+            <mxPoint x="644" y="324" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="644" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-32" value="&lt;span style=&quot;&quot;&gt;chunked CUAD&lt;/span&gt;&lt;br style=&quot;&quot;&gt;&lt;span style=&quot;&quot;&gt;annotations&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="uMAYI7Or0-LL8xsJXS3Z-31">
+          <mxGeometry x="-0.0219" relative="1" as="geometry">
+            <mxPoint x="-43" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-33" value="CUAD&amp;nbsp; &lt;br&gt;data balancing" style="sketch=0;outlineConnect=0;fontColor=#000000;fillColor=#60a917;strokeColor=#2D7600;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.external_sdk;" vertex="1" parent="1">
+          <mxGeometry x="878" y="112.38" width="56.34" height="64.62" as="geometry" />
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;dashPattern=1 2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="706" y="157" as="sourcePoint" />
+            <mxPoint x="876" y="157" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="746" y="157" />
+              <mxPoint x="746" y="157" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-37" value="CUAD annotations&lt;br&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212)); color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;with compliance review&lt;/span&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=top;resizable=0;points=[];labelPosition=center;verticalLabelPosition=bottom;" vertex="1" connectable="0" parent="uMAYI7Or0-LL8xsJXS3Z-36">
+          <mxGeometry x="-0.0857" y="2" relative="1" as="geometry">
+            <mxPoint x="2" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;dashed=1;dashPattern=1 2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="873" y="137" as="sourcePoint" />
+            <mxPoint x="707" y="137" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="863" y="137" />
+              <mxPoint x="863" y="137" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uMAYI7Or0-LL8xsJXS3Z-39" value="balanced CUAD&lt;br&gt;annotations" style="edgeLabel;html=1;align=center;verticalAlign=top;resizable=0;points=[];labelPosition=center;verticalLabelPosition=bottom;" vertex="1" connectable="0" parent="uMAYI7Or0-LL8xsJXS3Z-38">
+          <mxGeometry x="-0.0857" y="2" relative="1" as="geometry">
+            <mxPoint x="2" y="-38" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

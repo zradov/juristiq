@@ -73,7 +73,7 @@ The project integrates multiple AWS services:
 *  **Amazon Q** - front-end for users interaction;
 * **AWS Step Functions**  optional workflow including human-in-the-loop review.
 
-<br/>![Figure 2.](./arch/juristiq.png)
+<br/>![Figure 1.](./arch/juristiq.png)
 
 ## 4. Agentic workflow
 
@@ -136,6 +136,14 @@ python ./transform_cuad_s3.py -c PATH_TO_THE_FOLDER_WITH_CHUNKED_CUAD_ANNOTS -o 
 > The path to folders containing CUAD data and policies can be either a path on a local file system or AWS S3 bucket path.
 
 ## 7. Data preprocessing
+
+The CUAD data preprocessing is divided into the following phases:
+1. **CUAD chunking** - the original CUAD annotations are extracted into separate files grouped by the contract names.
+2. **CUAD transformation** - each chunked annotation file is further split into separate files, one file per annotation sample.
+3. **CUAD compliance review** - the compliance review is run on each annotation sample and the compliance review values, such as the "Rationale" and the "Suggested Redline", are automatically generated using GenAI.
+4. **CUAD dataset balancing** - a balanced dataset is created based on specified percentage of different clause types.
+
+<br/>![Figure 2.](./arch/justiq_data_preprocessing.png)
 
 ## 8. Prerequisities
 
