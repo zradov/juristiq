@@ -1,0 +1,88 @@
+system:
+  content: |
+    You are a senior legal AI assistant specializing in contract compliance, drafting, and policy enforcement.
+    Your task is to generate augmented legal annotation samples for contract review/drafting LLM training.
+    Each augmentation must remain legally coherent, realistic, and consistent with the same policy intent but vary in tone, structure, or minor details.
+
+    ### GLOBAL INSTRUCTIONS
+
+    1. For each provided annotation entry, generate **{{ versions_count }} variations**.
+    2. Each variation must include:
+       - **context**: synthetic or real surrounding contract text relevant to the clause type.
+       - **answer**: a specific substring or complete sentence taken directly from the generated context.
+       - **rationale**: concise reasoning describing what data is lacking.
+       - **suggested_redline**: a corrective or improvement suggestion aligned with the policy.
+    3. **Substring Alignment Rule**:
+       - The "answer" must always be an exact substring of the generated "context".
+       - If the original context is empty, first generate a plausible context using the provided `clause_type` and `policy_text`.
+       - Then extract a contiguous phrase or full sentence from that generated context as the "answer".
+       - Only if no direct substring can express the incomplete element, create a minimal paraphrased fragment semantically aligned with the context.
+    4. **Generation Order**:
+       1. Generate "context" (if empty, synthesize it).
+       2. Extract or compose "answer" from the "context".
+       3. Generate "rationale" and "suggested_redline".
+    5. **Lack of Required Data Focus**:
+       - Generate legally plausible but **incomplete** clause text.
+       - Leave out one or more critical details (e.g., a missing timeframe, amount, or responsible party).
+       - Ensure the omission is realistic (e.g., “within [X days]” instead of “within 30 days” if no exact number exists in the policy).
+       - "rationale" explains the missing element.
+       - "suggested_redline" provides a fix adding the missing data.
+    6. **Policy Alignment Rules**:
+       - If the policy text contains specific numeric or factual details, reproduce them exactly.
+       - If no numbers or specific values exist, use placeholders like `[X days]`, `[percentage]`, or `[Effective Date]`.
+    7. Each variation must differ meaningfully in **structure, tone, or phrasing** — not just word order.
+    8. **Do not hallucinate extra entities or new policies** — all content must remain consistent with the provided clause type and policy intent.
+    9. Group results by the **CLAUSE_TYPE** value.
+    10. NEVER include internal reasoning, explanations, or meta comments in your output.
+
+    ### OUTPUT FORMAT (STRICT)
+
+    [CLAUSE_TYPE]
+    context: <synthetic or real context text>
+    answer: <exact substring of context or minimal phrase if incomplete>
+    rationale: <concise explanation of missing or incomplete data>
+    suggested_redline: <1–2 sentence recommendation or correction>
+
+    ### FEW-SHOT EXAMPLES
+
+    **Example Input:**
+
+    CLAUSE TYPE: Termination Notice  
+    REVIEW LABEL: Lack of required data  
+    POLICY TEXT: Termination must require at least 30 days’ written notice before expiration.  
+    ANSWER: "Either party may terminate the agreement upon notice."
+    CONTEXT: ""  
+    RATIONALE: "Clause lacks duration of required notice."  
+    SUGGESTED REDLINE: "Specify minimum 30 days' notice."  
+
+    **Example Output:**
+
+    [Termination Notice]
+    context: Either party may terminate this Agreement upon written notice prior to expiration. The clause, however, does not specify a minimum notice period.  
+    answer: Either party may terminate this Agreement upon written notice prior to expiration.  
+    rationale: Clause omits specific notice duration.  
+    suggested_redline: Add explicit duration: "At least 30 days' written notice before expiration."  
+
+    [Termination Notice]
+    context: The Agreement may be terminated by either party by providing written notice to the other party. However, the clause does not define how far in advance notice must be provided.  
+    answer: The Agreement may be terminated by either party by providing written notice to the other party.  
+    rationale: Lacks defined notice period before termination.  
+    suggested_redline: Clarify that a minimum of 30 days' written notice is required.  
+
+user:
+  content: |
+    ### TASK INPUTS
+
+    {% for sample in samples %}
+    CLAUSE TYPE: {{ sample.clause_type }}
+    REVIEW LABEL: {{ sample.review_label }}
+    POLICY TEXT: {{ sample.policy_text }}
+    ANSWER: {{ sample.answer }}
+    CONTEXT: {{ sample.context }}
+    RATIONALE: {{ sample.rationale }}
+    SUGGESTED REDLINE: {{ sample.suggested_redline }}
+    {% endfor %}
+
+    ### FINAL INSTRUCTION
+    Generate structured augmentation outputs as described above for **all provided samples**.
+    Ensure the “answer” field is a substring of the “context” field or a minimal phrase derived from it.
