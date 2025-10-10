@@ -5,10 +5,8 @@ from openai import (
     APIStatusError, 
     APIConnectionError, 
     AuthenticationError, 
-    RateLimitError,
-    ChatCompletion
+    RateLimitError
 )
-import genai_config
 from typing import Tuple
 from genai_exceptions import *
 from abc import ABC, abstractmethod
@@ -40,6 +38,8 @@ class GenAIClient(ABC):
     Base class for GenAI clients.
     """
     def __init__(self, **kwargs):
+        self._api_parameters = kwargs["api_parameters"]
+        self._chat_model = kwargs["chat_model"]
         self._chat_metrics = GenAIChatMetrics()
 
 
@@ -74,13 +74,36 @@ class GenAIClient(ABC):
 
     @abstractmethod
     def get_user_balance(self) -> Tuple[float, str]:
+        """
+        Returns the user balance and the currency code.
+
+        Returns:
+            the user's current balance and the current code.
+        """
         pass
 
 
-class OpenAIClient(GenAIClient):
+    @abstractmethod
+    def get_tokens_count(self, text: str) -> int:
+        """
+        Returns the number of tokens in the given text.
+
+        Args:
+            text: the text to count tokens for.
+
+        Returns:
+            the number of tokens.
+        """
+        pass
+
+
+class OpenAICompatibleClient(GenAIClient):
     """
-    A client for OpenAI's GPT models.
+    A client for OpenAI's compatible APIs. The class implements common functionality
+    shared across different GenAI providers that have API compatible to the OpenAI's 
+    API, such as DeepSeek.
     """
+
     def __init__(self, **kwargs):
         """
         Initializes the OpenAI client with the provided API parameters and chat model.
@@ -92,21 +115,27 @@ class OpenAIClient(GenAIClient):
         """
         super().__init__(**kwargs)
         self.client = OpenAI(**kwargs["api_parameters"])
-        self.chat_model = kwargs["chat_model"]
         
 
     def _update_metrics(self, response: ChatCompletion) -> None:
+
+        if response.usage is None:
+            return
+        
         self._chat_metrics.prompt_tokens += response.usage.prompt_tokens
         self._chat_metrics.completion_tokens += response.usage.completion_tokens
         self._chat_metrics.total_tokens += response.usage.total_tokens
-        self._chat_metrics.cached_tokens += response.usage.prompt_tokens_details.cached_tokens
-        self._chat_metrics.prompt_cache_hit_tokens += response.usage.prompt_cache_hit_tokens
-        self._chat_metrics.prompt_cache_miss_tokens += response.usage.prompt_cache_miss_tokens   
+        if "prompt_cache_hit_tokens" in response.usage.model_fields:
+            self._chat_metrics.prompt_cache_hit_tokens += response.usage.prompt_cache_hit_tokens
+        if "prompt_cache_miss_tokens" in response.usage.model_fields:
+            self._chat_metrics.prompt_cache_miss_tokens += response.usage.prompt_cache_miss_tokens   
+        if response.usage.prompt_tokens_details and response.usage.prompt_tokens_details.cached_tokens:
+            self._chat_metrics.cached_tokens += response.usage.prompt_tokens_details.cached_tokens
 
-    
+
     def send_request(self, messages: list[dict]) -> str:
         try:
-            response = self.client.chat.completions.create(model=self.chat_model,
+            response = self.client.chat.completions.create(model=self._chat_model,
                                                            messages=messages)
             content = response.choices[0].message.content
             self._update_metrics(response)
@@ -121,9 +150,11 @@ class OpenAIClient(GenAIClient):
         except APIStatusError as e:
             if e.status_code == 402:
                 raise GenAIInsufficientBalanceError(f"Insufficient balance: {e}") from e
-            if e.status.code == 429:
+            if e.status_code == 429:
                 raise GenAIRateLimitError(f"Rate limit exceeded: {e}") from e
             if 400 <= e.status_code < 500:
+                if "model's maximum context length" in e.message:
+                    raise GenAITokenLimitError(f"Token limit exceeded: {e}") from e
                 raise GenAIClientError(f"Client error ({e.status_code}): {e}") from e
             elif 500 <= e.status_code < 600:
                 raise GenAIServerError(f"Server error ({e.status_code}): {e}") from e
@@ -133,16 +164,30 @@ class OpenAIClient(GenAIClient):
             raise GenAIUnknownError(f"Unexpected error in OpenAIClient: {e}") from e
         
 
-    def get_user_balance() ->  Tuple[float, str]:
+class DeekSeekAIClient(OpenAICompatibleClient):
+    """
+    A client for the DeekSeek API.
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._tokenizer = None
+
+
+    def get_tokens_count(self, text) -> int:
+        return -1
+    
+    
+    def get_user_balance(self) ->  Tuple[float, str]:
         """
-        Returns current user balance.
+        Returns current user balance. Works only for Deep Seek API
 
         Returns:
             a tuple with the current user balance and the currency short form.
         """
-        conn = http.client.HTTPSConnection(genai_config.DEEP_SEEK_API_DOMAIN)
+        conn = http.client.HTTPSConnection(self._api_parameters["base_url"].replace("https://", ""))
         headers = {
-            "Authorization": f"Bearer {genai_config.DEEP_SEEK_API_KEY}"
+            "Authorization": f"Bearer {self._api_parameters['api_key']}",
         }
         conn.request("GET", "/user/balance", body="",  headers=headers)
         res = conn.getresponse()
@@ -160,11 +205,19 @@ class BedrockAIClient(GenAIClient):
 
     
     def send_request(self, messages: list[dict]) -> str:
-        pass
+        return ""
 
 
-    def get_user_balance() -> Tuple[float, str]:
+    def get_user_balance(self) -> Tuple[float, str]:
+        return (-1, "")
+    
+
+    def _update_metrics(self, response) -> None:
         pass
+    
+    
+    def get_tokens_count(self, text) -> int:
+        return -1
 
 
 class GenAIClientFactory:
@@ -181,8 +234,8 @@ class GenAIClientFactory:
             an instance of a GenAIClient subclass.
         """
         if genai_provider_name in _GEN_AI_PROVIDERS:
-            if genai_provider_name in ["deep_seek", "open_ai"]:
-                return OpenAIClient(**_GEN_AI_PROVIDERS[genai_provider_name])
+            if genai_provider_name == "deep_seek":
+                return DeekSeekAIClient(**_GEN_AI_PROVIDERS[genai_provider_name])
             if genai_provider_name == "bedrockai":
                 return BedrockAIClient()
             

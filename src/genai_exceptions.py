@@ -13,6 +13,11 @@ class GenAIInsufficientBalanceError(GenAIError):
     pass
 
 
+class GenAITokenLimitError(GenAIError):
+    """Raised when the request exceeds the token limit."""
+    pass
+
+
 class GenAIAuthError(GenAIError):
     """Raised when authentication or authorization fails."""
     pass
