@@ -1,13 +1,14 @@
 import re
 import logging
-from typing import Any, Tuple
+from typing import Any, Tuple, List
 from collections import defaultdict
+from abc import ABC, abstractmethod
 
 
 logger = logging.getLogger(__name__)
 
 
-class Parser:
+class Parser(ABC):
     """
     A base parser class to parse the output of GenAI API requests.
     """
@@ -22,6 +23,7 @@ class Parser:
         self.regex = re.compile(pattern, re.IGNORECASE)
 
 
+    @abstractmethod
     def _get_item(self, matches: re.Match) -> Tuple[bool, Any]:
         """
         Extracts the item from the regex match object.
@@ -31,22 +33,22 @@ class Parser:
         """
         pass
 
-
+    
     def _post_processing(self, 
-                         phrases: dict[str, list[Any]],
+                         clause_phrases: dict[str, list[Any]],
                          item_size: int) ->  dict[str, list[Any]]:
         """
         Post-processes the parsed phrases to ensure that each parent title 
         has the expected number of subtitles.
 
         Args:
-            phrases: a dictionary where keys refers to the parent titles and values to the subtitles related to the parent titles.
+            clause_phrases: a dictionary where keys refers to the parent titles and values to the subtitles related to the parent titles.
             item_size: the expected number of subtitles for each parent title.
 
         Returns:
             a dictionary where keys refers to the parent titles and values to the subtitles related to the parent titles.
         """
-        return phrases
+        return clause_phrases
 
 
     def parse(self, output: str, item_size: int) -> dict[str, list[Any]]:
@@ -65,9 +67,9 @@ class Parser:
         Returns:
             a dictionary where keys refers to the parent titles and values to the subtitles related to the parent titles.
         """
-        phrases = defaultdict(list)
+        phrases: defaultdict[str, List[Any]] = defaultdict(list)
         lines = output.split("\n")
-        parent_title = None
+        parent_title = ""
         
         for line in lines:
             matches = self._process_line(line)
@@ -81,9 +83,9 @@ class Parser:
 
                 phrases[parent_title].append(item)
 
-        phrases = self._post_processing(phrases, item_size)
+        processed_phrases = self._post_processing(dict(phrases), item_size)
 
-        return phrases
+        return dict(processed_phrases)
      
 
     def _process_line(self, line: str) -> re.Match | None:
@@ -100,11 +102,11 @@ class Parser:
         
         if not line:
             logger.info(f"Line '{line}' is empty.")
-            return
+            return None
         matches = self.regex.match(line)
         if not matches:
             logger.warn(f"Line '{line}' does not match the pattern '{self.pattern}'.")
-            return
+            return None
         
         return matches
      
@@ -129,17 +131,17 @@ class ClauseAugmentationParser(Parser):
     A parser class to parse the output of GenAI API requests that contain clauses and their augmentations.
     """
     def __init__(self):
-        super().__init__(r"^\s*[[]?(?P<key>[^:\]]+)[\]]?\s*(:\s*(?P<value>.+[.])\s*)?$")
+        super().__init__(r"^\s*[\[]?(?P<key>[^:\]]+)[\]]?\s*(:\s*(?P<value>.+)\s*)?$")
 
 
     def _post_processing(self, 
-                         phrases: dict[str, list[Any]], 
+                         clause_phrases: dict[str, list[Any]], 
                          item_size: int) -> dict[str, list[Any]]:
         result = defaultdict(list)
 
-        for clause, phrases in phrases.items():
+        for clause, phrases in clause_phrases.items():
             for i in range(0, len(phrases), item_size):
-                merged_dict = {}
+                merged_dict: dict[str, Any] = {}
                 # because of the issue https://github.com/zradov/juristiq/issues/1 
                 # the code below is wrapped in try/except block
                 try:
