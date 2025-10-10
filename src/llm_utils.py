@@ -1,9 +1,5 @@
 import yaml
 import config
-from genai_clients import (
-    GenAIClient,
-    OpenAIClient
-)
 from pathlib import Path
 from jinja2 import Template
 from typing import Callable, Dict, Any, Optional
@@ -14,24 +10,7 @@ def _filter(text: str) -> str:
     return text.replace("\n", r"\\n")
 
 
-def get_genai_client(genai_provider_name: str) -> GenAIClient:
-    """
-    Creates and returns an OpenAI client object.
-
-    Args:
-        genai_provider_name: a name of the GenAI provider.
-
-    Returns:
-        a GenAIClient object or raises a KeyError in case when the GenAI provider is not supported.
-    """
-    if genai_provider_name in _GEN_AI_PROVIDERS:
-        if genai_provider_name in ["deep_seek", "open_ai"]:
-            return OpenAIClient(**_GEN_AI_PROVIDERS[genai_provider_name]) 
-    
-    raise KeyError(f"Unknown GenAI provider name: {genai_provider_name}")
-
-
-def _get_prompt_template(template_path: str) -> str:
+def _get_prompt_template(template_path: Path) -> str:
     """
     Loads and returns the prompt template contents
 
@@ -41,16 +20,15 @@ def _get_prompt_template(template_path: str) -> str:
     Returns:
         a prompt template string.
     """
-    path = Path(template_path)
-    prompt_template = path.read_text(encoding="utf-8")
+    prompt_template = template_path.read_text(encoding="utf-8")
 
     return prompt_template
 
 
 def _create_prompt_builder(
-    template_path: str,
-    variable_mapping: Optional[Dict[str, Callable[[Dict, Any], str]]] = None
-) -> Callable[..., Dict]:
+    template_path: Path,
+    variable_mapping: Optional[Dict[str, Callable[[Any], Any]]] = None
+) -> Callable[..., list[dict[Any, Any]]]:
     """
     Returns a function that creates prompt messages from a template.
     
@@ -78,8 +56,9 @@ def _create_prompt_builder(
         """
         # Build template variables by applying mapping functions
         template_vars = {}
-        for var_name, extractor in variable_mapping.items():
-            template_vars[var_name] = extractor(kwargs)
+        if variable_mapping:
+            for var_name, extractor in variable_mapping.items():
+                template_vars[var_name] = extractor(kwargs)
         
         temp_prompt_template = prompt_template
         if "context" in template_vars:
@@ -95,11 +74,11 @@ def _create_prompt_builder(
 
 
 def _get_prompt_builder(
-    template_path: str, 
-    context_transformer: Callable = None,
+    template_path: Path, 
+    context_transformer: Optional[Callable[..., Any]] = None,
     context_key: str = "data_batch",
     **kwargs
-) -> Callable[..., list[Dict]]:
+) -> Callable[..., list[dict[Any, Any]]]:
     """
     Returns a prompt builder function with the specified configuration.
     
@@ -120,7 +99,7 @@ def _get_prompt_builder(
     return _create_prompt_builder(template_path, prompt_build_vars)
 
 
-def get_clause_prompt_builder() -> Callable[..., list[Dict]]:
+def _get_clause_prompt_builder(template_path: str) -> Callable[..., list[dict[Any, Any]]]:
     """
     Returns a function that creates prompt messages for clause augmentation.
 
@@ -128,12 +107,20 @@ def get_clause_prompt_builder() -> Callable[..., list[Dict]]:
         a function that parses the prompt template for clause augmentation.
     """
     return _get_prompt_builder(
-        config.CLAUSE_AUGMENTATION_LLM_PROMPT_TEMPLATE_PATH,
+        template_path,
         lambda data_batch: {"samples": list(data_batch)}
     )
 
 
-def get_missing_clause_prompt_builder() -> Callable[..., list[Dict]]:
+def get_lack_of_required_data_clause_prompt_builder() -> Callable[..., list[dict[Any, Any]]]:
+    return _get_clause_prompt_builder(config.LACK_OF_REQUIRED_DATA_LLM_PROMPT_TEMPLATE)
+
+
+def get_risky_clause_prompt_builder() -> Callable[..., list[dict[Any, Any]]]:
+    return _get_clause_prompt_builder(config.RISKY_CLAUSE_AUGMENTATION_LLM_PROMPT_TEMPLATE_PATH)
+
+
+def get_missing_clause_prompt_builder() -> Callable[..., list[dict[Any, Any]]]:
     """
     Returns a function that creates prompt messages for missing clause augmentation.
 
@@ -146,7 +133,7 @@ def get_missing_clause_prompt_builder() -> Callable[..., list[Dict]]:
     )
 
 
-def get_rephrase_text_prompt_builder() -> Callable[..., list[Dict]]:
+def get_rephrase_text_prompt_builder() -> Callable[..., list[dict[Any, Any]]]:
     """
     Returns a function that creates prompt messages for rephrasing input text.
 
@@ -159,7 +146,7 @@ def get_rephrase_text_prompt_builder() -> Callable[..., list[Dict]]:
     )
 
 
-def get_contract_review_prompt_builder() -> Callable[..., list[Dict]]:
+def get_contract_review_prompt_builder() -> Callable[..., list[dict[Any, Any]]]:
     """
     Returns a function that creates prompt messages for contract compliance review.
 
@@ -172,7 +159,7 @@ def get_contract_review_prompt_builder() -> Callable[..., list[Dict]]:
         policy_id=lambda kwargs: _filter(kwargs["item"]["policy_id"]),
         policy_text=lambda kwargs: _filter(kwargs["policies"][kwargs["item"]["clause_type"]]["policy_text"]))
     )
-    prompt_builder = _create_prompt_builder(config.CONTRACT_REVIEW_LLM_PROMPT_TEMPLATE_PAT,
+    prompt_builder = _create_prompt_builder(config.CONTRACT_REVIEW_LLM_PROMPT_TEMPLATE_PATH,
                                             prompt_build_vars)
     
     return prompt_builder
