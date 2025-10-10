@@ -4,8 +4,16 @@ from typing import List, Any, Callable
 class DataBatch:
 
     def __init__(self, batch_size: int, data_store_type: Callable=list):
-        self.data = data_store_type([])
-        self.batch_size = batch_size
+        self._data_store_type = data_store_type
+        self._data = data_store_type([])
+        # used only when returning items of the set object. 
+        self._cached_data = []
+        self._batch_size = batch_size
+
+
+    @property
+    def data_store_type(self):
+        return self._data_store_type
 
 
     def add(self, item: Any | List[Any]) -> None:
@@ -15,7 +23,7 @@ class DataBatch:
         Args:
             item: a single item or list of items to add.
         """
-        if isinstance(self.data, set):
+        if isinstance(self._data, set):
             self._add_to_set(item)
         else:
             self._add_to_sequence(item)
@@ -24,30 +32,44 @@ class DataBatch:
     def _add_to_set(self, item: Any | List[Any]) -> None:
         
         if isinstance(item, list):
-            self.data.update(item)
+            self._data.update(item)
+            self._cached_data.extend(item)
         else:
-            self.data.add(item)
+            self._data.add(item)
+            self._cached_data.append(item)
 
 
     def _add_to_sequence(self, item: Any | List[Any]) -> None:
         
         if isinstance(item, list):
-            self.data.extend(item)
+            self._data.extend(item)
         else:
-            self.data.append(item)
+            self._data.append(item)
         
 
     def is_full(self) -> bool:
-        return len(self.data) >= self.batch_size
+        return len(self._data) >= self._batch_size
     
 
     def has_items(self) -> bool:
-        return len(self.data) > 0
+        return len(self._data) > 0
 
 
     def clear(self) -> None:
-        self.data.clear()
+        self._data.clear()
+        if self._cached_data:
+            self._cached_data.clear()
+
+
+    def __len__(self) -> int:
+        return len(self._data)
 
 
     def __iter__(self):
-        return iter(self.data)
+        return iter(self._data)
+    
+
+    def __getitem__(self, idx) -> Any:
+        if isinstance(self._data, set):
+            return sorted(self._cached_data)[idx]
+        return self._data[idx]
