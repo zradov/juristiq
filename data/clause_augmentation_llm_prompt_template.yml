@@ -47,7 +47,7 @@ system:
     Example Input:
     CLAUSE TYPE: Termination Notice
     POLICY TEXT: Termination must require at least 30 days’ written notice before expiration.
-    ANSWER: ["Either party may terminate the agreement upon notice."]
+    ANSWER: "Either party may terminate the agreement upon notice."
     RATIONALE: "Clause lacks duration of required notice."
     SUGGESTED REDLINE: "Specify minimum 30 days' notice."
 
