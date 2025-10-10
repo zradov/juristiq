@@ -1,11 +1,7 @@
 import logging
-from llm_utils import (
-    get_genai_client
-)
-from collections import defaultdict
-from typing import Callable, Any, Dict
+from typing import Callable, Dict
 from genai_output_parsers import Parser
-from genai_output_parsers import TitleSubtitleParser
+from genai_clients import GenAIClientFactory
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +20,7 @@ class RemoteParaphraser:
         Returns:
             None
         """
-        self.client = get_genai_client(genai_provider_name)
+        self.client = GenAIClientFactory.create(genai_provider_name)
 
 
     def rephrase(self, 
@@ -44,6 +40,7 @@ class RemoteParaphraser:
         Returns:
              a dictionary where keys refers to the parent titles and values to the subtitles related to the parent titles.
         """
+        
         messages = prompt_builder(versions_count=versions_count, **kwargs)
         response = self.client.send_request(messages=messages)
         phrases = output_parser.parse(response, item_size)
