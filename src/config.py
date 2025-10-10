@@ -1,22 +1,29 @@
-import os
 from pathlib import Path
+from common_config import DATA_DIR
 
-_DATA_DIR = Path(__file__).parent.parent / "data"
+
+# Folder where scripts output is stored.
 _OUTPUT_DIR = Path(__file__).parent.parent / "output"
 # Prompt template used for verifying the contract's clause policy compliance.
-CONTRACT_REVIEW_LLM_PROMPT_TEMPLATE_PATH = _DATA_DIR / "clause_compliance_llm_prompt_template.yml"
+CONTRACT_REVIEW_LLM_PROMPT_TEMPLATE_PATH = DATA_DIR / "clause_compliance_llm_prompt_template.yml"
 # Prompt template used for generating multiple variations of an input text.
-REPHRASE_TEXT_LLM_PROMPT_TEMPLATE_PATH = _DATA_DIR / "rephrase_text_llm_prompt_template.yml"
+REPHRASE_TEXT_LLM_PROMPT_TEMPLATE_PATH = DATA_DIR / "rephrase_text_llm_prompt_template.yml"
 # Prompt template used for generating multiple variations of combinations of 
 # the rationale and the suggested redline for annotations with the "Missing" review label.
-MISSING_CLAUSE_AUGMENTATION_LLM_PROMPT_TEMPLATE_PATH = _DATA_DIR / "missing_clause_augmentation_llm_prompt_template.yml"
+MISSING_CLAUSE_AUGMENTATION_LLM_PROMPT_TEMPLATE_PATH = DATA_DIR / "missing_clause_augmentation_llm_prompt_template.yml"
 # Prompt template used for synthetic data generation for annotations that have the review label
-# value set to "Compliant", "Risky" or "Lack of required data".
-CLAUSE_AUGMENTATION_LLM_PROMPT_TEMPLATE_PATH  = _DATA_DIR / "clause_augmentation_llm_prompt_template.yml"
+# value set to "Compliant", "Risky"
+CLAUSE_AUGMENTATION_LLM_PROMPT_TEMPLATE_PATH  = DATA_DIR / "clause_augmentation_llm_prompt_template.yml"
+# Prompt template used for synthetic data generation for annotations that have the review label
+# value set to "Lack of required data"
+LACK_OF_REQUIRED_DATA_LLM_PROMPT_TEMPLATE = DATA_DIR / "lack_of_required_data_llm_prompt_template.yml"
+# Prompt template used for synthetic data generation for annotations that have the review label
+# value set to "Risky"
+RISKY_CLAUSE_AUGMENTATION_LLM_PROMPT_TEMPLATE_PATH = DATA_DIR / "risky_llm_prompt_template.yml"
 # Embedding models used when splitting contracts into chunks based on semantic similarity.
 CONTRACTS_TEXT_EMBEDDINGS_MODEL = "nlpaueb/legal-bert-base-uncased"
 # Sample of legal policies used for verifying contract clause compliance.
-POLICIES_PATH = _DATA_DIR /"policies.json"
+POLICIES_PATH = DATA_DIR /"policies.json"
 # Path tp the folder with the augmented CUAD annotations.
 TRANSFORMED_CUAD_ANNOTS_DIR_PATH = _OUTPUT_DIR / "juristiq-cuad-transformed"
 # Path to the folder with the reviewed CUAD annotations regarding compliance policies.
