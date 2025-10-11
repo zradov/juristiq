@@ -1,8 +1,8 @@
 import json
+import random
 import logging
 from enum import Enum
 from pathlib import Path
-from random import sample, shuffle
 from llm_utils import (
     get_missing_clause_prompt_builder, 
     get_rephrase_text_prompt_builder,
@@ -182,7 +182,7 @@ class CuadDatasetBalancer:
         cuad_annots = self._validate_annots(CuadAnnots(cuad_annots))
         if shuffle:
             for review_label in cuad_annots:
-                shuffle(cuad_annots[review_label])
+                random.shuffle(cuad_annots[review_label])
 
         return cuad_annots
 
@@ -653,6 +653,8 @@ class CuadDatasetBalancer:
         """
         result = {}
         total_annots = sum([len(a) for _, a in annots.items()])
+        if total_annots == 0:
+            raise f"Total number of annotations cannot be {total_annots}"
         remaining = annots_target_count
 
         for review_label, review_label_annots in annots.items():
@@ -672,7 +674,9 @@ class CuadDatasetBalancer:
 
             temp_remaining = remaining
             for review_label in result:
-                low_pct, _ = ReviewLabelsExpectedPct[review_label].value
+                low_pct, max_pct = ReviewLabelsExpectedPct[review_label].value
+                if result[review_label] == annots_target_count * max_pct:
+                    continue
                 extra_annots_count = round(low_pct * remaining) 
                 result[review_label] += extra_annots_count
                 temp_remaining -= extra_annots_count
@@ -682,8 +686,8 @@ class CuadDatasetBalancer:
         result = {
             k: AugmentationInfo(
                 total_augmentations=v,
-                augmentations_per_annotation=int(annots_target_count / len(annots)) + 1,
-                reduce_augmentations_after=annots_target_count % len(annots))
+                augmentations_per_annotation=int(annots_target_count / len(annots[k])) + 1,
+                reduce_augmentations_after=annots_target_count % len(annots[k]))
             for k, v in result.items()
         }        
 
@@ -730,19 +734,21 @@ class CuadDatasetBalancer:
         augmentation_infos = self._get_expected_annots_counts(all_annots, annot_target_count)
 
         for review_label in src_annots:
+            total_augmentations = augmentation_infos[review_label].total_augmentations
             annots = dest_annots[review_label] \
                 if review_label in dest_annots and len(dest_annots[review_label]) > 0 \
                 else src_annots[review_label]
-            if len(annots) > augmentation_infos[review_label].total_augmentations:
+            if len(annots) > total_augmentations:
                 original_annots = [a for a in annots if "originated_from" not in a]
-                target_augmentations_cnt = augmentation_infos[review_label].total_augmentations - len(original_annots)
-                augmented_annots = sample([a for a in annots if "originated_from" in a], k=target_augmentations_cnt) \
-                    if target_augmentations_cnt > 0 else []
+                original_annots = random.sample(original_annots,
+                                                k=min(total_augmentations, len(original_annots)))
+                target_augmentations_cnt = max(total_augmentations - len(original_annots), 0)
+                augmented_annots = random.sample([a for a in annots if "originated_from" in a], k=target_augmentations_cnt)
                 balanced_annots[review_label] = original_annots + augmented_annots
                 self._save_annots(balanced_annots[review_label])
-            elif len(annots) < augmentation_infos[review_label].total_augmentations:
+            elif len(annots) < total_augmentations:
                 self._save_annots(annots)
-                annots_to_generate = augmentation_infos[review_label].total_augmentations - len(annots)
+                annots_to_generate = total_augmentations - len(annots)
                 generated_annots_count = 0
                 # the code is put inside the while loop because of the issue 
                 # https://github.com/zradov/juristiq/issues/1
