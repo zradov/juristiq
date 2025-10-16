@@ -3,7 +3,6 @@ from aws_cdk import (
     aws_ec2 as ec2
 )
 from constructs import Construct
-from custom_constructs.buckets import DataS3Bucket
 
 
 class AppStack(Stack):
@@ -14,4 +13,3 @@ class AppStack(Stack):
                  vpc: ec2.Vpc, 
                  **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-        s3_bucket = DataS3Bucket(self, "DataS3Bucket")
