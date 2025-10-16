@@ -2,8 +2,10 @@ import os
 from typing import Final
 from pathlib import Path
 
-_SCRIPT_PATH = Path(os.path.abspath(__name__)).parent
-_DATA_FOLDER =  os.path.join(_SCRIPT_PATH, "..", "data")
+
+_IAC_FOLDER_PATH = Path(os.path.abspath(__name__)).parent
+_DATA_FOLDER =  _IAC_FOLDER_PATH.parent / "data"
+_POLICIES_PATH = _IAC_FOLDER_PATH / "policies"
 S3_BUCKET_NAME_PREFIX = os.getenv("S3_BUCKET_NAME_PREFIX", "juristiq")
 
 # All data related to the Juristiq project.
@@ -17,15 +19,35 @@ CUAD_FULL_CONTRACTS_BUCKET_NAME: Final[str] = f"{S3_BUCKET_NAME_PREFIX}-cuad-ful
 # Transformed CUAD annotations augmented with additional field required for LLM fine-tunning.
 CUAD_TRANSFORMED_BUCKET_NAME: Final[str] = f"{S3_BUCKET_NAME_PREFIX}-cuad-transformed"
 # Augmented CUAD annotations updated with policy compliance review from an LLM model playing the legal AI assistant role.
-CUAD_FINAL_BUCKET_NAME: Final[str] = f"{S3_BUCKET_NAME_PREFIX}-cuad-final"
+CUAD_REVIEWED_BUCKET_NAME: Final[str] = f"{S3_BUCKET_NAME_PREFIX}-cuad-reviewed"
 # The project code and other automation scripts
 JURISTIQ_CODE_BUCKET_NAME = "juristiq-code-24592-1273-31703-576"
+# The name of the S3 bucket where the input files, for the Bedrock batch inference, are stored.
+BEDROCK_BATCH_INFERENCE_INPUT_BUCKET_NAME = f"{S3_BUCKET_NAME_PREFIX}-bedrock-batch-inference-input"
+# The name of the S3 bucket where the output of the Bedrock batch inference is stored.
+BEDROCK_BATCH_INFERENCE_OUTPUT_BUCKET_NAME = f"{S3_BUCKET_NAME_PREFIX}-bedrock-batch-inference-output"
+# The original CUAD annotations path.
 CUAD_ANNOTS_PATH: Final[str] = os.path.join(_DATA_FOLDER, "CUAD_v1.json")
 # IAM policy for VPC management. 
-VPC_MANAGEMENT_POLICY_PATH = os.path.join(_SCRIPT_PATH, "policies", "vpc_management.json")
+VPC_MANAGEMENT_POLICY_PATH = _POLICIES_PATH / "vpc_management.json"
 # IAM policy attached to the EC2 instance used to process and augment the CUAD .json annotations.
-CUAD_PROCESSING_POLICY_PATH = os.path.join(_SCRIPT_PATH, "policies", "ec2_to_s3_cuad_processing_permissions.json")
+CUAD_PROCESSING_POLICY_PATH = _POLICIES_PATH / "ec2_to_s3_cuad_processing_permissions.json"
+# Policy containing S3 permissions for input/output bucket
+BEDROCK_BATCH_INFERENCE_S3_TEMPLATE_PATH = _POLICIES_PATH / "bedrock_batch_inference_s3_template.json"
+# Bedrock model invocation permissions
+BEDROCK_BATCH_INFERENCE_MODEL_INVOCATION_TEMPLATE_PATH = _POLICIES_PATH / "bedrock_batch_inference_model_invocation_template.json"
+# Managed Bedrock policy for submitting jobs and passing service role
+BEDROCK_BATCH_INFERENCE_SUBMITTER_TEMPLATE_PATH = _POLICIES_PATH / "bedrock_batch_inference_submitter_template.json"
 # User data script run at the boot time of the EC2 instance used to process and augment the CUAD .json annotations.
-EC2_CUAD_PROCESSING_USER_DATA_PATH = os.path.join(_SCRIPT_PATH, "user_data", "ec2_instance_bootstrap.sh")
+EC2_CUAD_PROCESSING_USER_DATA_PATH = _IAC_FOLDER_PATH / "user_data" / "ec2_instance_bootstrap.sh"
+DEFAULT_BEDROCK_BATCH_INFERENCE_MODEL = "amazon.nova-lite-v1:0"
+# The user name of the user who will creates a batch inference jobs to invoke a LLM models.
+DEFAULT_BEDROCK_BATCH_INFERENCE_JOBS_SUBMITTER = "juristiqdev"
+# The name of the AWS System Manager parameter containing the name of the Bedrock's service role 
+# for running the batch inference jobs.
+BEDROCK_SERVICE_ROLE_PARAM_NAME = "/bedrock/batch-inference-service-role-arn"
+# The name of the AWS System Manager parameter containing the name of the user role 
+# who will be creating and running Bedrock's batch inference jobs.
+BEDROCK_SUBMITTER_ROLE_PARAM_NAME = "/bedrock/batch-inference-jobs-submitter-role-arn"
 
 

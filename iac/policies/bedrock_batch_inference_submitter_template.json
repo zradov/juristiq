@@ -1,0 +1,42 @@
+{
+    "Version":"2012-10-17",		 	 	 
+    "Statement": [
+        {
+            "Sid": "BatchInference",
+            "Effect": "Allow",
+            "Action": [  
+                "bedrock:ListFoundationModels",
+                "bedrock:GetFoundationModel",
+                "bedrock:ListInferenceProfiles",
+                "bedrock:GetInferenceProfile",
+                "bedrock:ListCustomModels",
+                "bedrock:GetCustomModel",
+                "bedrock:TagResource", 
+                "bedrock:UntagResource", 
+                "bedrock:ListTagsForResource",
+                "bedrock:CreateModelInvocationJob",
+                "bedrock:GetModelInvocationJob",
+                "bedrock:ListModelInvocationJobs",
+                "bedrock:StopModelInvocationJob"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowAccessToBedrockSSMParams",
+            "Effect": "Allow",
+            "Action": "ssm:GetParameter",
+            "Resource": "arn:aws:ssm:${region_name}:${account_id}:parameter/*"
+        },
+        {
+            "Sid": "AllowPassBedrockServiceRole",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "arn:aws:iam::${account_id}:role/${bedrock_service_role}",
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": "bedrock.amazonaws.com"
+                }
+            }
+        }
+    ]   
+}

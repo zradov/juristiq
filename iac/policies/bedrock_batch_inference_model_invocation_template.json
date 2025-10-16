@@ -1,0 +1,20 @@
+{
+    "Version":"2012-10-17",		 	 	 
+    "Statement": [
+        {
+            "Sid": "BedrockModelInvokePermissions",
+            "Effect": "Allow",
+            "Action": [
+                "bedrock:InvokeModel",
+                "bedrock:InvokeModelWithResponseStream",
+                "bedrock:ListInferenceProfiles",
+                "bedrock:GetFoundationModel",
+                "bedrock:CreateModelInvocationJob"
+            ],
+            "Resource": [
+                "arn:aws:bedrock:${region_name}:${account_id}:foundation-model/*",
+                "arn:aws:bedrock:${region_name}:${account_id}:inference-profile/*"
+            ]
+        }
+    ]
+}
