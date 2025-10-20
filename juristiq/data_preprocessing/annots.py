@@ -1,4 +1,6 @@
+import json
 import hashlib
+from typing import List, Dict
 
 
 def get_hash(messages: list[dict]) -> str:
@@ -19,3 +21,22 @@ def get_hash(messages: list[dict]) -> str:
     res = hashlib.md5(messages_text.encode())
     
     return res.hexdigest()
+
+
+def load_data_from_jsonl(file_path: str) -> List[Dict]:
+    """
+    Loads records from .jsonl file.
+
+    Args:
+        file_path: a local file system path to the .jsonl file.
+
+    Returns:
+        a list of records.
+    """
+    records = []
+
+    with open(file_path, mode="r", encoding="utf8") as fp:
+        for line in fp:
+            records.append(json.loads(line))
+
+    return records
