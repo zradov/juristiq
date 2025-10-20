@@ -1,0 +1,70 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowAccessToBedrockResources",
+            "Effect": "Allow",
+            "Action": [
+                "bedrock:InvokeModel",
+                "bedrock:InvokeModelWithResponseStream",
+                "bedrock:CreateModelInvocationJob",
+                "bedrock:StopModelInvocationJob",
+                "bedrock:GetProvisionedModelThroughput",
+                "bedrock:GetInferenceProfile",
+                "bedrock:ListInferenceProfiles",
+                "bedrock:GetImportedModel",
+                "bedrock:GetPromptRouter",
+                "sagemaker:InvokeEndpoint"
+            ],
+            "Resource": [
+                "arn:aws:bedrock:${region_name}::foundation-model/*",
+                "arn:aws:bedrock:${region_name}:${account_id}:inference-profile/*",
+                "arn:aws:bedrock:${region_name}:${account_id}:provisioned-model/*",
+                "arn:aws:bedrock:${region_name}:${account_id}:imported-model/*",
+                "arn:aws:bedrock:${region_name}:${account_id}:application-inference-profile/*",
+                "arn:aws:bedrock:${region_name}:${account_id}:default-prompt-router/*",
+                "arn:aws:bedrock:${region_name}:${account_id}:prompt-router/*",
+                "arn:aws:sagemaker:${region_name}:${account_id}:endpoint/*",
+                "arn:aws:bedrock:${region_name}:${account_id}:marketplace/model-endpoint/all-access"
+            ]
+        },
+        {
+            "Sid": "FetchInputBuckets",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${s3_input_bucket}",
+                "arn:aws:s3:::${s3_input_bucket}/*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceAccount": "${account_id}"
+                }
+            }
+        },
+        {
+            "Sid": "FetchAndUpdateOutputBucket",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:GetBucketLocation",
+                "s3:AbortMultipartUpload",
+                "s3:ListBucketMultipartUploads"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${s3_results_folder}",
+                "arn:aws:s3:::${s3_results_folder}/*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceAccount": "${account_id}"
+                }
+            }
+        }
+    ]
+}
