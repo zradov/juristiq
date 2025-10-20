@@ -6,7 +6,7 @@ import argparse
 from pathlib import Path
 from collections import defaultdict
 from typing import Tuple, List, Dict
-from juristiq.config.logging import configure_logging
+from juristiq.config.logging_config import configure_logging
 
 
 configure_logging()

@@ -6,11 +6,35 @@ from pathlib import Path
 from juristiq.config.templates import (
     AMAZON_NOVA_EVALUATION_SYSTEM_ROLE_PROMPT
 )
-from juristiq.inference.batch import (
+from juristiq.inference.prompts import (
     BaseGenerationConfig,
     ModelType,
-    get_batch_record
+    get_batch_inference_record,
+    get_annot_input
 )
+from juristiq.config.inference import DEFAULT_BATCH_INFERENCE_PARAMS
+
+
+def _validate_args(parser: argparse.ArgumentParser,
+                   args: argparse.Namespace) -> None:
+    """
+    Validate the command line arguments.
+
+    Args:
+        args: The command line arguments.
+
+    Raises:
+        argparse.ArgumentError: If any of the arguments is invalid.
+    """
+    if not os.path.exists(args.annots_path):
+        parser.error(f"The annotations path '{args.annots_path}' does not exist.")
+    
+    output_path = Path(args.output_file)
+    if output_path.exists() and not output_path.is_file():
+        parser.error(f"The output path '{args.output_file}' is not a file.")
+    
+    if args.max_file_size <= 0:
+        parser.error(f"The maximum file size '{args.max_file_size}' must be a positive integer.")
 
 
 def parse_args():
@@ -29,69 +53,10 @@ def parse_args():
     
     args = parser.parse_args()
 
+    _validate_args(parser, args)
+
     return args
     
-
-def get_user_message(annot: dict) -> dict:
-    """
-    Create a user message for the given annotation.
-
-    Args:
-        annot (dict): A dictionary containing the annotation details.
-
-    Returns:
-        dict: A dictionary representing the user message.
-    """
-    return {
-        "role": "user",
-        "content": [
-            {
-                "text": (
-                    f"Question: {annot['question']} Context: {annot['context']} "
-                    f"Policy: {annot['policy_text']} Clause Type: {annot['clause_type']}"   
-                )
-            }
-        ]
-    }
-
-
-def get_annot_text(annot: dict) -> str:
-    """
-    Create a text representation of the given annotation.
-
-    Args:
-        annot (dict): A dictionary containing the annotation details.
-
-    Returns:
-        str: A string representing the annotation.
-    """
-    return (f"Question: {annot['question']} Context: {annot['context']} "
-            f"Policy: {annot['policy_text']} Clause Type: {annot['clause_type']}")
-
-
-def get_assistant_message(annot: dict) -> str:
-    """
-    Create an assistant message for the given annotation.
-
-    Args:
-        annot (dict): A dictionary containing the annotation details.
-
-    Returns:
-        dict: A dictionary representing the assistant message.
-    """
-    return {
-        "role": "assistant",
-        "content": [
-            {
-                "text": (
-                    f"Review label: {annot['review_label']}. "
-                    f"Rationale: {annot['rationale']} "
-                    f"Suggested Redline: {annot['suggested_redline']}"
-                )
-            }
-        ]
-    }
-
 
 def _get_inference_config(system_prompt: str) -> BaseGenerationConfig:
     """
@@ -104,11 +69,7 @@ def _get_inference_config(system_prompt: str) -> BaseGenerationConfig:
         BaseGenerationConfig: The configuration object for batch inference.
     """
     return BaseGenerationConfig(
-        temperature=0.1,
-        top_p=0.90,
-        max_tokens=256,
-        stop_sequences=[],
-        top_k=40,
+        **DEFAULT_BATCH_INFERENCE_PARAMS.model_dump(),
         system=system_prompt
     )
 
@@ -180,11 +141,10 @@ def create_dataset(annots_path: str,
 
         for idx, line in enumerate(input_fp.readlines()):
             annot = json.loads(line)
-            annot_text = get_annot_text(annot)
-            record = get_batch_record(annot_text, idx, ModelType.NOVA, config)
+            annot_text = get_annot_input(annot)
+            record = get_batch_inference_record(annot_text, annot["hash"], ModelType.NOVA, config)
             record_size = len(record.encode("utf8"))
             if current_buffer_size + record_size > max_file_size_in_bytes:
-                print(f"current_buffer_size: {current_buffer_size}")
                 _write_text(output_path, output_file_stem, buffer)
                 buffer.truncate(0)
                 buffer.seek(0)
