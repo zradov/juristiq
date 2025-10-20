@@ -11,8 +11,10 @@ from typing import Tuple
 from constructs import Construct
 from aws_cdk.aws_s3 import IBucket
 from utilities.permissions import (
-    attach_policy_to_role,
-    PermissionsType
+    get_policy,
+    PermissionsType,
+    get_service_principal,
+    create_role
 )
 
 
@@ -31,36 +33,21 @@ def _create_service_role(stack: Stack,
                          s3_input_bucket: IBucket,
                          s3_output_bucket: IBucket) -> iam.Role:
 
-    principal = iam.ServicePrincipal(
-        "bedrock.amazonaws.com",
-        conditions={
-            "StringEquals": {
-                "aws:SourceAccount": Aws.ACCOUNT_ID
-            },
-            "ArnEquals": {
-                "aws:SourceArn": f"arn:aws:bedrock:{Aws.REGION}:{Aws.ACCOUNT_ID}:model-invocation-job/*"
-            }
-        }
-    )
-
-    role = iam.Role(stack, 
-                    "BedrockBatchInferenceServiceRole", 
-                    assumed_by=principal,
-                    description="Role assumed by Bedrock to run batch inference jobs")
-    
-    attach_policy_to_role(stack,
-                          "BedrockBatchInferenceS3",
-                          iac_config.BEDROCK_BATCH_INFERENCE_S3_TEMPLATE_PATH,
+    principal = get_service_principal("bedrock.amazonaws.com",
+                                      arn_equals_conditions={{
+                                          "aws:SourceArn": f"arn:aws:bedrock:{Aws.REGION}:{Aws.ACCOUNT_ID}:model-invocation-job/*"}
+                                      })
+    policy = get_policy(stack,
+                          "BedrockBatchInferencePolicy",
                           PermissionsType.BEDROCK_BATCH_INFERENCE,
-                          role,
                           s3_input_bucket=s3_input_bucket,
-                          s3_output_bucket=s3_output_bucket)
-    attach_policy_to_role(stack,
-                          "BedrockBatchInferenceModelInvocation",
-                          iac_config.BEDROCK_BATCH_INFERENCE_MODEL_INVOCATION_TEMPLATE_PATH,
-                          PermissionsType.BEDROCK_BATCH_INFERENCE,
-                          role,
+                          s3_output_bucket=s3_output_bucket,
                           model_name=model_name)
+    role = create_role(stack,
+                       "BedrockBatchInferenceServiceRole",
+                       principal,
+                       description="Service role for creating and running batch inference jobs.",
+                       policies=policy)
     
     return role
 
@@ -69,25 +56,23 @@ def _create_submitter_role(stack: Stack,
                            user_name: str, 
                            bedrock_service_role: str) -> iam.Role:
 
-    role = iam.Role(
-        stack,
-        "BedrockBatchInferenceSubmitterRole",
-        assumed_by=iam.ArnPrincipal(f"arn:aws:iam::{Aws.ACCOUNT_ID}:user/{user_name}"),
-        description="Role used by ML pipeline or developers to submit/manage Bedrock batch inference jobs"
-    )
-
-    attach_policy_to_role(stack,
-                          "BedrockBatchInferenceSubmitter",
-                          iac_config.BEDROCK_BATCH_INFERENCE_SUBMITTER_TEMPLATE_PATH,
-                          PermissionsType.BEDROCK_BATCH_INFERENCE,
-                          role,
-                          bedrock_service_role=bedrock_service_role)
+    submitter_policy = get_policy(stack,
+                                  "BedrockBatchInferenceSubmitterPolicy",
+                                  PermissionsType.BEDROCK_BATCH_INFERENCE,
+                                  bedrock_service_role=bedrock_service_role)
+    role = create_role(stack,  
+                       "BedrockBatchInferenceSubmitterRole",
+                       principal=iam.ArnPrincipal(f"arn:aws:iam::{Aws.ACCOUNT_ID}:user/{user_name}"),
+                       description="Role used by ML pipeline or developers to submit/manage Bedrock batch inference jobs",
+                       policies=submitter_policy)
     
     return role
 
 
 class BedrockBatchIAMStack(Stack):
-
+    """
+    Stack to create IAM roles and policies for Bedrock Batch Inference jobs.
+    """
     def __init__(self, scope: Construct, construct_id: str, **kwargs):
         super().__init__(scope, construct_id, **kwargs)
 
@@ -99,7 +84,7 @@ class BedrockBatchIAMStack(Stack):
                                             s3_input_bucket=s3_input_bucket,
                                             s3_output_bucket=s3_output_bucket)
         ssm.StringParameter(self, "BedrockBatchInferenceServiceRoleArn",
-                            parameter_name=iac_config.BEDROCK_SERVICE_ROLE_PARAM_NAME,
+                            parameter_name=iac_config.BEDROCK_BATCH_INFERENCE_SERVICE_ROLE_PARAM_NAME,
                             string_value=service_role.role_arn,
                             description="ARN of the Bedrock service role for batch inference")
         

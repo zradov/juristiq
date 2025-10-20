@@ -15,6 +15,28 @@
                 "arn:aws:bedrock:${region_name}:${account_id}:foundation-model/*",
                 "arn:aws:bedrock:${region_name}:${account_id}:inference-profile/*"
             ]
+        },
+        {
+         "Sid": "S3Access",
+         "Effect": "Allow",
+         "Action": [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:ListBucket"
+         ],
+         "Resource": [
+            "arn:aws:s3:::${s3_input_bucket}",
+            "arn:aws:s3:::${s3_input_bucket}/*",
+            "arn:aws:s3:::${s3_output_bucket}",
+            "arn:aws:s3:::${s3_output_bucket}/*"
+         ],
+         "Condition": {
+            "StringEquals": {
+                "aws:ResourceAccount": [
+                    "${account_id}"
+                ]
+            }
+         }
         }
     ]
 }
