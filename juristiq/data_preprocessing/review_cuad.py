@@ -5,7 +5,7 @@ import argparse
 from pathlib import Path
 from typing import Generator, Tuple, Union
 from juristiq.genai.utils import log_user_balance
-from juristiq.config.logging import configure_logging
+from juristiq.config.logging_config import configure_logging
 from juristiq.genai.exceptions import (
     GenAIAuthError,
     GenAIInsufficientBalanceError

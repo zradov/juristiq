@@ -6,7 +6,7 @@ import argparse
 from pathlib import Path
 from collections import defaultdict
 from typing import Tuple, List, Dict
-from ...config.logging import configure_logging
+from ...config.logging_config import configure_logging
 
 
 configure_logging()

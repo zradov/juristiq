@@ -8,7 +8,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from multiprocessing import Pool
 from .data_providers import get_data_provider
-from juristiq.config.logging import configure_logging
+from juristiq.config.logging_config import configure_logging
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_experimental.text_splitter import SemanticChunker
 
