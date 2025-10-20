@@ -17,7 +17,7 @@ from juristiq.genai.output_parsers import (
 from juristiq.data_preprocessing.utils import DataBatch
 from juristiq.data_preprocessing.annots import get_hash
 from juristiq.genai.utils import log_user_balance
-from juristiq.config.logging import configure_logging
+from juristiq.config.logging_config import configure_logging
 from juristiq.genai.exceptions import (
     GenAIAuthError, 
     GenAIInsufficientBalanceError,
@@ -173,7 +173,7 @@ class CuadDatasetBalancer:
 
         for annot_path in src_path.rglob("*.json"):
             annot = json.loads(annot_path.read_text(encoding="utf-8"))
-            annot["hash"] = annot_path.name
+            annot["hash"] = annot_path.stem
             review_label = annot["review_label"]
             review_label_annots = cuad_annots.setdefault(self._get_review_label_key(review_label), [])
             review_label_annots.append(annot)
