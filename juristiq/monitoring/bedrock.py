@@ -10,6 +10,7 @@ from datetime import (
 from botocore.client import BaseClient
 from juristiq.inference.models import ModelName
 from typing import NamedTuple, List, Dict, Tuple
+from juristiq.monitoring.costs_calculator import calculate_costs
 
 
 class TokensCost(NamedTuple):
@@ -29,25 +30,6 @@ _COSTS_PER_1000_TOKENS = {
     ModelName.NOVA_LITE: TokensCost(input_tokens=0.00006, 
                                     output_tokens=0.00024)
 }
-
-
-def _calculate_costs(model: ModelName, 
-                     tokens_metrics: TokensMetrics) -> TokensCost:
-    """
-    Calculate the costs based on the model and token metrics.
-    
-    Args:
-        model: The model name.
-        tokens_metrics: The token metrics containing total input and output tokens.
-
-    Returns:
-        A TokensCost named tuple with calculated costs for input and output tokens.
-    """
-    model_costs = _COSTS_PER_1000_TOKENS[model]
-    tokens_cost = TokensCost(input_tokens=model_costs.input_tokens * tokens_metrics.total_input_tokens,
-                             output_tokens=model_costs.output_tokens * tokens_metrics.total_output_tokens)
-
-    return tokens_cost
 
 
 def _get_client(aws_service: str="cloudwatch") -> BaseClient:
@@ -137,7 +119,8 @@ def _process_metric_data_results(metric_data_results: List[Dict],
 
 def fetch_token_metrics(model_id: str, 
                         start_time: datetime, 
-                        end_time: datetime) -> TokensMetrics:
+                        end_time: datetime,
+                        period: int) -> TokensMetrics:
     """
     Fetches token metrics (input and output token counts) from AWS CloudWatch 
     for a specified model over a given time range.
@@ -153,7 +136,7 @@ def fetch_token_metrics(model_id: str,
     """
     client = _get_client()
     
-    queries = _get_metrics_data_queries(model_id)
+    queries = _get_metrics_data_queries(model_id, period=period)
     
     resp = client.get_metric_data(
         MetricDataQueries=queries,
@@ -194,7 +177,7 @@ def show_token_metrics(model: ModelName,
         tokens_metrics = fetch_token_metrics(model.value, start, end, period=60)
         current_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-        tokens_cost = _calculate_costs(model, tokens_metrics)
+        tokens_cost = calculate_costs(model, tokens_metrics)
 
         lines = [
             f"Current time: {current_time}",
@@ -204,9 +187,9 @@ def show_token_metrics(model: ModelName,
             f"=> Total output tokens: {tokens_metrics.total_output_tokens}",
             "",
             "Costs:",
-            f"=> Input tokens: {tokens_cost.input_tokens}",
-            f"=> Output tokens: {tokens_cost.output_tokens}",
-            f"=> Total: {tokens_cost.input_tokens + tokens_cost.output_tokens}"
+            f"=> Input tokens: {tokens_cost.input:.4f}",
+            f"=> Output tokens: {tokens_cost.output:.4f}",
+            f"=> Total: {tokens_cost.input + tokens_cost.output:.4f}"
         ]
              
         print("\n".join(lines))
@@ -221,5 +204,5 @@ def show_token_metrics(model: ModelName,
 
 if __name__ == "__main__":
 
-    show_token_metrics(ModelName.NOVA_LITE, loop=True)
+    show_token_metrics(ModelName.NOVA_LITE, loop=True, delta_hours=48)
         
