@@ -4,6 +4,7 @@ from .common import DATA_DIR
 
 # Folder where scripts output is stored.
 _OUTPUT_DIR = Path(__file__).parent.parent / "output"
+TEXT_ENCODING = "utf8"
 # Prompt template used for verifying the contract's clause policy compliance.
 CONTRACT_REVIEW_LLM_PROMPT_TEMPLATE_PATH = DATA_DIR / "clause_compliance_llm_prompt_template.yml"
 # Prompt template used for generating multiple variations of an input text.
