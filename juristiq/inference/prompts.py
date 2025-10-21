@@ -375,9 +375,9 @@ def get_annot_output(annot: Dict) -> str:
     )
 
 
-def get_judge_evaluation_prompt(model_name: ModelName, annot: Dict) -> str:
+def get_evaluation_inference_prompt(model_name: ModelName, annot: Dict) -> str:
     """
-    Create a judge evaluation prompt for the given model and annotation.
+    Create a prompt the is used by the inference model during Model-as-Judge evaluation.
 
     Args:
         model_name: the name of the model.
