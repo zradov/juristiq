@@ -1,56 +1,84 @@
 import os
 import json
-import argparse
+from argparse import (
+    ArgumentParser, 
+    ArgumentTypeError
+)
 from pathlib import Path
 from juristiq.inference.prompts import (
     get_annot_output,
-    get_judge_evaluation_prompt
+    get_evaluation_inference_prompt
 )
+from juristiq.file.utils import FileWriter
 from juristiq.inference.models import ModelName
 from juristiq.data_preprocessing.annots import load_data_from_jsonl
 
 
-def _validate_args(args: argparse.Namespace) -> None:
-    """
-    Validate the command line arguments.
+def input_file_path(value):
 
-    Args:
-        args: The command line arguments.
+    if not os.path.exists(value):
+        raise ArgumentTypeError(f"The input file '{value}', containing the annotation samples, does not exist.")
 
-    Raises:
-        argparse.ArgumentError: If any of the arguments is invalid.
-    """
-    if not os.path.exists(args.input_file):
-        raise argparse.ArgumentError(args.input_file, f"The input file '{args.input_file}', containing the annotation samples, does not exist.")
-    
-    output_path = Path(args.output_file)
-    if output_path.exists() and not output_path.is_file():
-        raise argparse.ArgumentError(args.output_file, f"The output path '{args.output_file}' is not a file.")
-    
+    return value
+
+
+def output_folder_path(value):
+
+    output_path = Path(value)
+    if output_path.exists() and output_path.is_file():
+        raise ArgumentTypeError(f"The output folder '{value}' is not a folder.")
+
+    return value
+
+
+def model_id(value):
+
+    if value not in ModelName:
+        raise ArgumentTypeError(f"Unsupported model id: {model_id}")
+
+    return value
+
+
+def max_file_size(value):
+
+    val = int(value)
+
+    if val <= 0:
+        raise ArgumentTypeError(f"The maximum file size '{value}' must be a positive integer.")
+
+    return val
+
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Creates evaluation dataset for calculating baseline metrics.")
+    parser = ArgumentParser(description="Creates evaluation dataset for calculating baseline metrics.")
 
     parser.add_argument("-i", "--input-file",
                          required=True,
+                         type=input_file_path,
                          help="Local file system path to a .jsonl file containing the annotation samples.")
-    parser.add_argument("-o", "--output-file", 
-                        required=True, 
-                        help="Local file system path to a .jsonl file where the data, in the evaluation format, will be saved.")
+    parser.add_argument("-o", "--output-folder", 
+                        required=True,
+                        type=output_folder_path,
+                        help="Local file system path to a folder where the files, in the evaluation format, will be saved.")
     parser.add_argument("-m", "--model-id",
                         required=True,
-                        help="The identifier of the model that was used for the batch inference.")
-
+                        type=model_id,
+                        help="The identifier of the model that will be used for inference.")
+    parser.add_argument("-s", "--max_file_size",
+                        required=False,
+                        type=max_file_size,
+                        default=100,
+                        help="A maximum file size in MB of a .jsonl file, if surpassed, another file is created.")
+    
     args = parser.parse_args()
-
-    _validate_args(args)
 
     return args
     
 
 def main(input_file_path: str,
-         output_file_path: str,
-         model_id: str):
+         output_folder_path: str,
+         model_id: str,
+         max_file_size: int):
     """
     Creates and saves the evaluation dataset to an output file.
 
@@ -58,26 +86,25 @@ def main(input_file_path: str,
         input_file_path: a path to the annotation samples file.
         output_file_path: a path to the file containing the evaluation dataset.
         model_id: an identifier of the model that will be used for inference.
+        max_file_size (int): Maximum size of each output file in MB.
     """
     annots = load_data_from_jsonl(input_file_path)
     model_name = ModelName(model_id)
     
-    with open(output_file_path, mode="w", encoding="utf8") as fp:
-        for annot in annots:
-            
+    with FileWriter(input_file_path, output_folder_path, max_file_size) as fw:
+        for annot in annots:    
             record = {
-                "prompt": get_judge_evaluation_prompt(model_name, annot),
+                "prompt": get_evaluation_inference_prompt(model_name, annot),
                 "referenceResponse": get_annot_output(annot)
             }
-
-            fp.write(json.dumps(record) + "\n")
+            fw.write(json.dumps(record) + "\n")
 
 
 if __name__ == "__main__":
 
     args = parse_args()
-    _validate_args(args)
 
     main(args.input_file, 
-         args.output_file,
-         args.model_id)
+         args.output_folder,
+         args.model_id,
+         args.max_file_size)
