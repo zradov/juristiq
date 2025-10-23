@@ -9,7 +9,8 @@ from juristiq.data_preprocessing.annots import load_data_from_jsonl
 from juristiq.cloud.utils import get_bedrock_client, get_account_id
 from juristiq.config.inference import (
     DEFAULT_JUDGE_INFERENCE_PARAMS, 
-    CUSTOM_EVALUATION_METRIC_NAME
+    CUSTOM_EVALUATION_METRIC_NAME,
+    CUSTOM_DATASET_NAME
 )
 from juristiq.config.templates import BEDROCK_MODEL_EVALUATION_CUSTOM_METRICS_PROMPT
 
@@ -85,7 +86,7 @@ def _get_evaluation_config(input_file_path: str,
                 {
                     "taskType": "General",
                     "dataset": {
-                        "name": "CustomDataset",
+                        "name": CUSTOM_DATASET_NAME,
                         "datasetLocation": {
                             "s3Uri": input_file_path
                         }

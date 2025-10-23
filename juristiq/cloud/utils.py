@@ -30,6 +30,11 @@ def get_bedrock_client() -> BaseClient:
     return get_client("bedrock")
 
 
+def get_s3_client() -> BaseClient:
+
+    return get_client("s3")
+
+
 def get_account_id() -> str:
     """
     Get the AWS account ID associated with the current credentials.
