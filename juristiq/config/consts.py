@@ -1,9 +1,7 @@
 from pathlib import Path
-from .common import DATA_DIR
+from .common import DATA_DIR, OUTPUT_DIR
 
 
-# Folder where scripts output is stored.
-_OUTPUT_DIR = Path(__file__).parent.parent / "output"
 TEXT_ENCODING = "utf8"
 # Prompt template used for verifying the contract's clause policy compliance.
 CONTRACT_REVIEW_LLM_PROMPT_TEMPLATE_PATH = DATA_DIR / "clause_compliance_llm_prompt_template.yml"
@@ -26,12 +24,9 @@ CONTRACTS_TEXT_EMBEDDINGS_MODEL = "nlpaueb/legal-bert-base-uncased"
 # Sample of legal policies used for verifying contract clause compliance.
 POLICIES_PATH = DATA_DIR /"policies.json"
 # Path tp the folder with the augmented CUAD annotations.
-TRANSFORMED_CUAD_ANNOTS_DIR_PATH = _OUTPUT_DIR / "juristiq-cuad-transformed"
+TRANSFORMED_CUAD_ANNOTS_DIR_PATH = OUTPUT_DIR / "juristiq-cuad-transformed"
 # Path to the folder with the reviewed CUAD annotations regarding compliance policies.
-REVIEWED_CUAD_ANNOTS_DIR_PATH = _OUTPUT_DIR / "juristiq-cuad-reviewed"
-# Path to the folder where the reviewed CUAD annotations will be stored.
-OUTPUT_DIR = _OUTPUT_DIR / "juristiq-cuad-reviewed"
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+REVIEWED_CUAD_ANNOTS_DIR_PATH = OUTPUT_DIR / "juristiq-cuad-reviewed"
 # Path to a file where tokens ratios of different tokenizer combinations are stored.
 # Primarily used when calculating prompt tokens.
 TOKENS_RATIO_FILE_PATH = DATA_DIR / "tokens_ratio.json"

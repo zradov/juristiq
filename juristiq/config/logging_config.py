@@ -2,11 +2,10 @@ import os
 import logging
 from pathlib import Path
 from datetime import datetime
+from .common import OUTPUT_DIR
 
 
-_SCRIPT_PATH = Path(__file__).resolve().parent
-LOG_PATH = _SCRIPT_PATH / "logs" / f"app_{datetime.now().strftime('%H%M%S_%d%m%y')}.log"
-
+LOG_PATH = OUTPUT_DIR / "logs" / f"app_{datetime.now().strftime('%H%M%S_%d%m%y')}.log"
 os.makedirs(LOG_PATH.parent, exist_ok=True)
 
 

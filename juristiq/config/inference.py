@@ -43,5 +43,7 @@ class JudgeInferenceParams(InferenceParams):
 
 DEFAULT_BATCH_INFERENCE_PARAMS = BatchInferenceParams()
 DEFAULT_JUDGE_INFERENCE_PARAMS = JudgeInferenceParams()
+CUSTOM_DATASET_NAME = "CustomDataset"
 CUSTOM_EVALUATION_METRIC_NAME = "BedrockCustomEvaluationMetric"
+S3_OUTPUT_FOLDER_FORMAT="{output_folder}{job_name}/{job_uuid}/models/{model_id}/taskTypes/{task_type}/datasets/{dataset}/"
 
