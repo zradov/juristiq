@@ -14,7 +14,10 @@ The system can:
   * Amazon Bedrock (Nova, AgentCore);
   * Amazon SageMaker, OpenSearch with vector search, Amazon Q, and the CUAD dataset for fine-tuning.
 
-## 2. Project structure 
+## 2. Project structure
+
+<details>
+<summary>Project root</summary>
 
 * [arch](./arch/) - folder containing architectural diagrams.
 * [data](./data/) - data folder.
@@ -76,7 +79,7 @@ The system can:
     * [review_cuad](./juristiq/data_preprocessing/review_cuad.py) - runs comliance review on each contract clause annotation using LLM.
     * [transform_cuad.py](./juristiq/data_preprocessing/transform_cuad.py) - augments the chunked CUAD annotations with additions field and stores them into a separate folder.
     * [utils.py](./juristiq/data_preprocessing/data_utils.py) - various data utilities.
-  * [experiments] - experimental code, not used
+  * [experiments](./juristiq/experiments/) - experimental code, not used
   * [file](./juristiq/file/) - file utilities
     * [utils.py](./juristiq/file/utils.py) - utilities for writting text to files.
   * [genai](./juristiq/genai/) - GenAI utilities.
@@ -87,14 +90,16 @@ The system can:
     * [utils.py](./juristiq/genai/utils.py) - utility functions used with the GenAI adapters.
   * [inference](./juristiq/inference/) - inference utilities.
     * [models.py](./juristiq/inference/models.py) - contains enumeration of models used for running on-demand and batch inference and evaluation jobs in AWS Bedrock.
+    * [performance.py](./juristiq/inference/performance.py) - retrieves information about Bedrock evaluation jobs performance.
     * [prompts.py](./juristiq/inference/prompts.py) - utility scripts for constructing LLM prompts.
     * [tokens_counter.py](./juristiq/inference/tokens_counter.py) - tokens counting utility. 
   * [llm](./juristiq/llm/) - LLM utilities.
     * [utils.py](./juristiq/llm/utils.py) - utility functions used for creation of various LLM prompts, mostly used for data augmentation.
   * [monitoring](./juristiq/monitoring/) - infrastructure and costs monitoring utilities
     * [bedrock.py](./juristiq/monitoring/bedrock.py) - utility function for monitoring input and output tokens for different LLMs.
-    * [costs_calculator.py](./juristiq/monitoring/costs_calculator.py) - a simply utility for calculating total 
-    costs based on the number of input and output tokens.
+    * [costs_calculator.py](./juristiq/monitoring/costs_calculator.py) - a simply utility for total costs based on the number of input and output tokens.
+  *  [ui](./juristiq/ui/) - UI components and utilities.
+    * [chat.py](./juristiq/ui/chat.py) - utility script used in the chatbot UI.
 * [scripts](./scripts/) - standalone scripts.
   * [llm_fine_tuning](./scripts/llm_fine_tuning/) - scripts for running data preprocessing, fine-tuning and models evaluation.
     * [create_batch_inference_dataset.py](./scripts/llm_fine_tuning/create_batch_inference_dataset.py) - creates a dataset containing prompts in a format required for running batch inference jobs in AWS Bedrock.
@@ -103,10 +108,14 @@ The system can:
     * [create_model_as_judge_evaluation_dataset.py](./scripts/llm_fine_tuning/create_model_as_judge_evaluation_dataset.py) - creates a dataset containing prompts in a format required for running Model-as-Judge evaluation jobs in AWS Bedrock.
     * [evaluate_model_inference.py](./scripts/llm_fine_tuning/evaluate_model_inference.py) - submits a new model evaluation job request to AWS Bedrock.
     * [inference_costs_calculator.py](./scripts/llm_fine_tuning/inference_costs_calculator.py) - runs inference costs estimation.
+    * [show_evaluation_performance.py](./scripts/llm_fine_tuning/show_evaluation_performance.py) - shows the performance metrics of the Bedrock evaluation jobs.
     * [train_token_estimator.py (**NOT USED**)](./scripts/llm_fine_tuning/train_token_estimator.py) - trains a linear regression model for the prediction of the number of tokens per text, for models that do not have publicly available tokenizers, such as Amazon Nova Lite. 
+  * [chatui.py](./scripts/chatui.py) - creates simple chatbot UI. 
   * [create_stratified_dataset.py](./scripts/create_stratified_dataset.py) - creates a stratified dataset.
   * [cuad_dataset_balancing.py](./scripts/cuad_dataset_balancing.py) - runs the dataset balancing process.
-  
+
+</details>
+
 ## 3. Architecture
 
 The project integrates multiple AWS services:

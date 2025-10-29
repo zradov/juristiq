@@ -1,4 +1,3 @@
-from pathlib import Path
 from .common import DATA_DIR, OUTPUT_DIR
 
 

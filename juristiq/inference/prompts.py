@@ -4,6 +4,7 @@ from pathlib import Path
 import juristiq.config.templates as templates
 from typing import Optional, List, Union, Dict
 from juristiq.inference.models import ModelName
+from juristiq.config.consts import TEXT_ENCODING
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -393,6 +394,19 @@ def get_evaluation_inference_prompt(model_name: ModelName, annot: Dict) -> str:
     return prompt
 
 
+def load_template(template_path: str) -> str:
+    """
+    Loads prompt template content.
+
+    Args:
+        template_path: a path to the prompt template
+
+    Returns:
+        prompt template content
+    """
+    return Path(template_path).read_text(encoding=TEXT_ENCODING)
+
+
 def get_system_prompt_text(model_name: ModelName) -> str:
     """
     Get the system prompt text for the specified model name.
@@ -404,6 +418,6 @@ def get_system_prompt_text(model_name: ModelName) -> str:
         the system prompt text as a string.
     """
     if model_name == ModelName.NOVA_LITE:
-        return Path(templates.AMAZON_NOVA_EVALUATION_SYSTEM_ROLE_PROMPT).read_text(encoding="utf8")
+        return load_template(templates.AMAZON_NOVA_EVALUATION_SYSTEM_ROLE_PROMPT)
 
     raise ValueError(f"Unsupported model name: {model_name}.")

@@ -16,6 +16,14 @@ class InferenceParams(BaseModel):
 
     model_config = _model_config
 
+    def to_camel_dict(self) -> dict:
+        return {
+            "temperature": self.temperature,
+            "topP": self.top_p,
+            "maxTokens": self.max_tokens,
+            "stopSequences": self.stop_sequences,
+        }
+
 
 class BatchInferenceParams(InferenceParams):
     """Inference parameters for Bedrock's batch inference processing"""
