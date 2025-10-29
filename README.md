@@ -98,7 +98,7 @@ The system can:
   * [monitoring](./juristiq/monitoring/) - infrastructure and costs monitoring utilities
     * [bedrock.py](./juristiq/monitoring/bedrock.py) - utility function for monitoring input and output tokens for different LLMs.
     * [costs_calculator.py](./juristiq/monitoring/costs_calculator.py) - a simply utility for total costs based on the number of input and output tokens.
-  *  [ui](./juristiq/ui/) - UI components and utilities.
+  * [ui](./juristiq/ui/) - UI components and utilities.
     * [chat.py](./juristiq/ui/chat.py) - utility script used in the chatbot UI.
 * [scripts](./scripts/) - standalone scripts.
   * [llm_fine_tuning](./scripts/llm_fine_tuning/) - scripts for running data preprocessing, fine-tuning and models evaluation.
